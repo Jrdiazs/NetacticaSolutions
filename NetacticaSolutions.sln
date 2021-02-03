@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netactica.UI", "Netactica.UI\Netactica.UI.csproj", "{57637443-422E-4310-B681-9EAC7B349615}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{E0162852-A3F6-4F18-9BC8-78CD3A5657AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infraestructure", "Infraestructure", "{87C35DAD-E7FF-4D5D-B963-9C39536843D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netactica.Data", "Netactica.Data\Netactica.Data.csproj", "{274E8039-0555-4755-A397-0572EC5DB701}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netactica.Services", "Netactica.Services\Netactica.Services.csproj", "{7964AACB-2D5E-4C75-AD89-A747C2F77EE3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Transversal", "Transversal", "{0E69DC13-16E2-4E0C-9714-5B596971BDC6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netactica.Models", "Netactica.Models\Netactica.Models.csproj", "{5BDF0840-83B9-4736-A944-FA8210B38437}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netactica.Tools", "Netactica.Tools\Netactica.Tools.csproj", "{B1DEAD83-72D7-4019-A605-633841A560A1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{EDD56E93-D5F3-42C8-AD14-2CCF2FB5B530}"
+	ProjectSection(SolutionItems) = preProject
+		Data\NETACTICA.postman_collection.json = Data\NETACTICA.postman_collection.json
+		Data\NETACTICA_OBJETOS_INSERT.sql = Data\NETACTICA_OBJETOS_INSERT.sql
+		Data\NETACTIVA_DB.bak = Data\NETACTIVA_DB.bak
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{57637443-422E-4310-B681-9EAC7B349615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57637443-422E-4310-B681-9EAC7B349615}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57637443-422E-4310-B681-9EAC7B349615}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57637443-422E-4310-B681-9EAC7B349615}.Release|Any CPU.Build.0 = Release|Any CPU
+		{274E8039-0555-4755-A397-0572EC5DB701}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{274E8039-0555-4755-A397-0572EC5DB701}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{274E8039-0555-4755-A397-0572EC5DB701}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{274E8039-0555-4755-A397-0572EC5DB701}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7964AACB-2D5E-4C75-AD89-A747C2F77EE3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7964AACB-2D5E-4C75-AD89-A747C2F77EE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7964AACB-2D5E-4C75-AD89-A747C2F77EE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7964AACB-2D5E-4C75-AD89-A747C2F77EE3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BDF0840-83B9-4736-A944-FA8210B38437}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BDF0840-83B9-4736-A944-FA8210B38437}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BDF0840-83B9-4736-A944-FA8210B38437}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BDF0840-83B9-4736-A944-FA8210B38437}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1DEAD83-72D7-4019-A605-633841A560A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1DEAD83-72D7-4019-A605-633841A560A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1DEAD83-72D7-4019-A605-633841A560A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1DEAD83-72D7-4019-A605-633841A560A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{57637443-422E-4310-B681-9EAC7B349615} = {E0162852-A3F6-4F18-9BC8-78CD3A5657AE}
+		{274E8039-0555-4755-A397-0572EC5DB701} = {87C35DAD-E7FF-4D5D-B963-9C39536843D6}
+		{7964AACB-2D5E-4C75-AD89-A747C2F77EE3} = {87C35DAD-E7FF-4D5D-B963-9C39536843D6}
+		{5BDF0840-83B9-4736-A944-FA8210B38437} = {0E69DC13-16E2-4E0C-9714-5B596971BDC6}
+		{B1DEAD83-72D7-4019-A605-633841A560A1} = {0E69DC13-16E2-4E0C-9714-5B596971BDC6}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8B0011D6-04B2-43A2-9EE6-C92971D46599}
+	EndGlobalSection
+EndGlobal

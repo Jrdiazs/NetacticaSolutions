@@ -1,0 +1,126 @@
+{
+	"info": {
+		"_postman_id": "33b30fa6-5308-4a40-8e86-5904f8a99ebc",
+		"name": "NETACTICA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "ConsultarReservaPorId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:58486/api/Reservas/ConsultarReservaPorId?reservaId=989D4169-C2AF-4D03-AF5D-28C24292F499",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "58486",
+					"path": [
+						"api",
+						"Reservas",
+						"ConsultarReservaPorId"
+					],
+					"query": [
+						{
+							"key": "reservaId",
+							"value": "989D4169-C2AF-4D03-AF5D-28C24292F499"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ConsultarReservaPorFechas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"FechaCreacionIni\":\"2021-01-01\",\r\n    \"FechaCreacionFin\":\"2022-02-03\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:58486/api/Reservas/ConsultarReservaPorFechas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "58486",
+					"path": [
+						"api",
+						"Reservas",
+						"ConsultarReservaPorFechas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GuardarReservas",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"DocumentoIdentidad\": \"10293837\",\r\n    \"TipoIdentificacionId\": 1,\r\n    \"FechaHoraPickup\": \"2021-02-23T12:34:56\",\r\n    \"FechaHoraDropoff\": \"2021-02-25T11:34:56\",\r\n    \"FechaCreacion\": \"2021-02-02T23:07:20.027\",\r\n    \"LugarPickup\": \"AEROPUERTO RIONEGRO\",\r\n    \"LugarDropoff\": \"AEROPUERTO RIONEGRO\",\r\n    \"Marca\": \"KIA PICANTO\",\r\n    \"Modelo\": \"2021\",\r\n    \"PrecioPorHora\": 123500.0,\r\n    \"Nombres\": \"JUAN DAVID\",\r\n    \"Apellidos\": \"AREVALO\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:58486/api/Reservas/GuardarReservas",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "58486",
+					"path": [
+						"api",
+						"Reservas",
+						"GuardarReservas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ModificarReserva",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ReservaId\": \"efe7f921-2d5d-4c13-a3b1-765d1f2add8f\",\r\n    \"DocumentoIdentidad\": \"10293837\",\r\n    \"TipoIdentificacionId\": 1,\r\n    \"FechaHoraPickup\": \"2021-02-23T12:34:56\",\r\n    \"FechaHoraDropoff\": \"2021-02-25T11:34:56\",\r\n    \"FechaCreacion\": \"2021-02-02T23:07:20.027\",\r\n    \"LugarPickup\": \"AEROPUERTO RIONEGRO\",\r\n    \"LugarDropoff\": \"AEROPUERTO RIONEGRO\",\r\n    \"Marca\": \"KIA PICANTO\",\r\n    \"Modelo\": \"2021\",\r\n    \"PrecioPorHora\": 123500.0,\r\n    \"Nombres\": \"JUAN DAVID\",\r\n    \"Apellidos\": \"AREVALO\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:58486/api/Reservas/ModificarReserva",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "58486",
+					"path": [
+						"api",
+						"Reservas",
+						"ModificarReserva"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
