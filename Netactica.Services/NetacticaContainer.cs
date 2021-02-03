@@ -3,6 +3,9 @@ using Ninject.Modules;
 
 namespace Netactica.Services
 {
+    /// <summary>
+    /// Contenedor de clases de Netactica
+    /// </summary>
     public class NetacticaContainer : NinjectModule
     {
         public override void Load()
