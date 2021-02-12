@@ -26,6 +26,7 @@ namespace Netactica.UI.Controllers
         {
             _services = services;
         }
+
         /// <summary>
         /// Consulta la reserva por id
         /// </summary>
@@ -38,9 +39,9 @@ namespace Netactica.UI.Controllers
         {
             try
             {
-                var reserva = _services.ConsultarReservaPorId(reservaId);
+                var response = _services.ConsultarReservaPorId(reservaId);
 
-                return Ok(reserva);
+                return Ok(response);
             }
             catch (Exception)
             {
@@ -61,9 +62,9 @@ namespace Netactica.UI.Controllers
             {
                 var json = filtro.SerializeObject();
                 Logger.Info($"Filtro {json}");
-                var reservas = _services.ConsultarReservas(filtro);
+                var response = _services.ConsultarReservas(filtro);
 
-                return Ok(reservas);
+                return Ok(response);
             }
             catch (Exception)
             {
@@ -82,9 +83,9 @@ namespace Netactica.UI.Controllers
         {
             try
             {
-                reservas = _services.GuardarReserva(reservas);
+                var response = _services.GuardarReserva(reservas);
 
-                return Ok(reservas);
+                return Ok(response);
             }
             catch (Exception)
             {
@@ -104,9 +105,9 @@ namespace Netactica.UI.Controllers
         {
             try
             {
-                reservas = _services.ModificarReserva(reservas);
+                var response = _services.ModificarReserva(reservas);
 
-                return Ok(reservas);
+                return Ok(response);
             }
             catch (Exception)
             {

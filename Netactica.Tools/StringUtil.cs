@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Configuration;
+using System.Data.SqlTypes;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -250,6 +251,16 @@ namespace Netactica.Tools.StringTools
             {
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Valida un datetime para sql server
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static bool ValidSqlDateTime(this DateTime date) 
+        {
+            return ((date >= (DateTime)SqlDateTime.MinValue) && (date <= (DateTime)SqlDateTime.MaxValue));
         }
 
         /// <summary>

@@ -15,61 +15,72 @@ namespace Netactica.Services
             _data = data;
         }
 
-        public Reservas ConsultarReservaPorId(Guid reservaId)
+        public ResponseModel ConsultarReservaPorId(Guid reservaId)
         {
+            ResponseModel response = new ResponseModel();
             try
             {
-                return _data.ConsultarReservaPorId(reservaId);
+                var reserva = _data.ConsultarReservaPorId(reservaId);
+                response.SuccesCall(reserva);
             }
             catch (Exception ex)
             {
-                Logger.ErrorFatal("ReservasServices ConsultarReservaPorId", ex);
-                throw ex;
+                response.Fail(ex, $"Error en => {nameof(ConsultarReservaPorId)}");
+                Logger.ErrorFatal($"ReservasServices  {nameof(ConsultarReservaPorId)}", ex);
             }
+            return response;
         }
 
-        public List<Reservas> ConsultarReservas(ReservaFiltro filtro)
+        public ResponseModel ConsultarReservas(ReservaFiltro filtro)
         {
+            ResponseModel response = new ResponseModel();
             try
             {
                 filtro.ReservaId = null;
-                return _data.ConsultarReservas(filtro);
+                var reservas = _data.ConsultarReservas(filtro);
+
+                response.SuccesCall(reservas);
             }
             catch (Exception ex)
             {
-                Logger.ErrorFatal("ReservasServices ConsultarReservas", ex);
-                throw ex;
+                response.Fail(ex, $"Error en => {nameof(ConsultarReservas)}");
+                Logger.ErrorFatal($"ReservasServices {nameof(ConsultarReservas)}", ex);
             }
+            return response;
         }
 
-        public Reservas GuardarReserva(Reservas reserva)
+        public ResponseModel GuardarReserva(Reservas reserva)
         {
+            ResponseModel response = new ResponseModel();
             try
             {
                 if (reserva.FechaHoraPickup > reserva.FechaHoraDropoff)
                     throw new Exception($"La fecha de hora de Pickup debe ser menor que la fecha de Dropoff");
 
                 Guid id = reserva.ReservaId;
-
                 id = id == Guid.Empty ? Guid.NewGuid() : id;
-
                 reserva.ReservaId = id;
                 reserva.FechaCreacion = DateTime.Now;
+
+                ValidarReserva(reserva);
+
                 var newid = _data.InsertGetKey<Guid>(reserva);
 
                 reserva = _data.ConsultarReservaPorId(id);
 
-                return reserva;
+                response.SuccesCall(reserva, "Reserva guardada correctamente");
             }
             catch (Exception ex)
             {
-                Logger.ErrorFatal("ReservasServices GuardarReserva", ex);
-                throw ex;
+                response.Fail(ex, $"Error en => {nameof(GuardarReserva)}");
+                Logger.ErrorFatal($"ReservasServices {nameof(GuardarReserva)}", ex);
             }
+            return response;
         }
 
-        public Reservas ModificarReserva(Reservas reserva)
+        public ResponseModel ModificarReserva(Reservas reserva)
         {
+            ResponseModel response = new ResponseModel();
             try
             {
                 var reservaOld = _data.GetFindById(reserva.ReservaId);
@@ -82,23 +93,51 @@ namespace Netactica.Services
 
                 reservaOld.FechaHoraDropoff = reserva.FechaHoraDropoff;
                 reservaOld.FechaHoraPickup = reserva.FechaHoraPickup;
-
+                reservaOld.TipoIdentificacionId = reserva.TipoIdentificacionId;
+                reservaOld.DocumentoIdentidad = reserva.DocumentoIdentidad;
+                reservaOld.Apellidos = reserva.Apellidos;
+                reservaOld.Nombres = reserva.Nombres;
                 reservaOld.LugarDropoff = reserva.LugarDropoff;
                 reservaOld.LugarPickup = reserva.LugarPickup;
                 reservaOld.Marca = reserva.Marca;
-                reserva.Modelo = reserva.Modelo;
-                reserva.PrecioPorHora = reserva.PrecioPorHora;
+                reservaOld.Modelo = reserva.Modelo;
+                reservaOld.PrecioPorHora = reserva.PrecioPorHora;
+
+                ValidarReserva(reservaOld);
 
                 _data.Update(reservaOld);
 
                 reservaOld = _data.ConsultarReservaPorId(reserva.ReservaId);
 
-                return reservaOld;
+                response.SuccesCall(reservaOld, "Reserva modificada correctamente");
             }
             catch (Exception ex)
             {
-                Logger.ErrorFatal("ReservasServices ModificarReserva", ex);
-                throw ex;
+                response.Fail(ex, $"Error en => {nameof(ModificarReserva)}");
+                Logger.ErrorFatal($"ReservasServices {nameof(ModificarReserva)}", ex);
+            }
+            return response;
+        }
+
+        private void ValidarReserva(Reservas reservas)
+        {
+            try
+            {
+                var validator = new ReservasValidator();
+                var results = validator.Validate(reservas);
+
+                if (results.IsValid)
+                    return;
+
+                var msg = new List<string>();
+                foreach (var error in results.Errors)
+                    msg.Add(error.ErrorMessage);
+
+                throw new Exception(string.Join(",", msg));
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -140,12 +179,12 @@ namespace Netactica.Services
 
     public interface IReservasServices : IDisposable
     {
-        Reservas ConsultarReservaPorId(Guid reservaId);
+        ResponseModel ConsultarReservaPorId(Guid reservaId);
 
-        List<Reservas> ConsultarReservas(ReservaFiltro filtro);
+        ResponseModel ConsultarReservas(ReservaFiltro filtro);
 
-        Reservas GuardarReserva(Reservas reserva);
+        ResponseModel GuardarReserva(Reservas reserva);
 
-        Reservas ModificarReserva(Reservas reserva);
+        ResponseModel ModificarReserva(Reservas reserva);
     }
 }
