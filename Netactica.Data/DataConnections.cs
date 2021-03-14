@@ -13,7 +13,7 @@ namespace Netactica.Data
         /// <summary>
         /// Obtiene la conexion actual de base de datos
         /// </summary>
-        public IDbConnection DataBase { get; private set; }
+        public IDbConnection DataBase { get; set; }
 
         public DataConnections()
         {
@@ -113,7 +113,7 @@ namespace Netactica.Data
         /// <summary>
         /// Obtiene la conexion actual de base de datos
         /// </summary>
-        IDbConnection DataBase { get; }
+        IDbConnection DataBase { get; set; }
 
         /// <summary>
         /// Cierra la conexion actual

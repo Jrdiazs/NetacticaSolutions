@@ -12,9 +12,12 @@ namespace Netactica.Services
         {
             //Repositorios
             Bind<IReservasData>().To<ReservasData>();
+            Bind<IUsuarioInfoData>().To<UsuarioInfoData>();
+            Bind<IUsuariosData>().To<UsuariosData>();
 
             //Servicios
             Bind<IReservasServices>().To<ReservasServices>();
+            Bind<IUsuarioServices>().To<UsuarioServices>();
         }
     }
 }

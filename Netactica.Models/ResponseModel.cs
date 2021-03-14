@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Netactica.Models.Exceptions;
+using System;
 
 namespace Netactica.Models
 {
@@ -36,11 +37,20 @@ namespace Netactica.Models
             Success = false;
             CodeValue = (int)EnumSuccesCode.Fail;
         }
+
+        public void Fail(BusinessException ex, string msg = "")
+        {
+            Message = ex.Message;
+            InfoMessage = msg;
+            Success = false;
+            CodeValue = (int)EnumSuccesCode.FailBusiness;
+        }
     }
 
     public enum EnumSuccesCode
     {
         Succes = 1,
-        Fail = -1
+        Fail = -1,
+        FailBusiness = -2
     }
 }

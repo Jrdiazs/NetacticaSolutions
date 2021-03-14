@@ -258,7 +258,7 @@ namespace Netactica.Tools.StringTools
         /// </summary>
         /// <param name="date"></param>
         /// <returns></returns>
-        public static bool ValidSqlDateTime(this DateTime date) 
+        public static bool ValidSqlDateTime(this DateTime date)
         {
             return ((date >= (DateTime)SqlDateTime.MinValue) && (date <= (DateTime)SqlDateTime.MaxValue));
         }

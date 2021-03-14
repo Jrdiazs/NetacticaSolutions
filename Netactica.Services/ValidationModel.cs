@@ -62,4 +62,19 @@ namespace Netactica.Services
                 GreaterThan(0).WithMessage("El precio por hora no puede ser menor o igual a 0");
         }
     }
+
+    public class UsersValidator : AbstractValidator<Usuario>
+    {
+        public UsersValidator()
+        {
+            RuleFor(x => x.UsuarioId).NotEmpty().WithMessage("El id de usuario no pueder ser vacio");
+
+            RuleFor(x => x.UsuarioNombre).NotEmpty().WithMessage("El nombre de usuario no pueder ser vacio").
+                MaximumLength(100).WithMessage("El nombre de usuario no pueden pasar de 100 caracteres");
+
+            RuleFor(x => x.UsuarioCorreo).NotEmpty().WithMessage("El correo de usuario no pueder ser vacio").
+                MaximumLength(100).WithMessage("El correo no pueden pasar de 100 caracteres").
+                EmailAddress().WithMessage("El correo no es válido");
+        }
+    }
 }

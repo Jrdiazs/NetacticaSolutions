@@ -16,4 +16,13 @@ namespace Netactica.Models
         [Column("Alias")]
         public string Alias { get; set; }
     }
+
+    public enum EnumTipoIdentificacion 
+    {
+        CC = 1,
+        CE = 2,
+        TI = 3,
+        PA = 4,
+        NIT = 5
+    }
 }

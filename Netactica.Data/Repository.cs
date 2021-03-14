@@ -22,6 +22,11 @@ namespace Netactica.Data
         {
         }
 
+        public Repository(IDbConnection connection) 
+        {
+            DataBase = connection;
+        }
+
         #endregion [Constructor]
 
         #region [Metodos]

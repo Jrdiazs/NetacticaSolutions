@@ -1,4 +1,5 @@
 using log4net.Config;
+using Netactica.Services;
 using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -12,6 +13,9 @@ namespace Netactica.UI
         {
             //lOG 4 NET
             XmlConfigurator.Configure();
+
+            ///Automapper
+            AutoMapperConfig.Initialize();
 
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
