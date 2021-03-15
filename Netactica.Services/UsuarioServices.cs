@@ -6,6 +6,7 @@ using Netactica.Services.Response;
 using Netactica.Tools;
 using Netactica.Tools.StringTools;
 using System;
+using System.Collections.Generic;
 
 namespace Netactica.Services
 {
@@ -14,19 +15,39 @@ namespace Netactica.Services
     /// </summary>
     public class UsuarioServices : BaseServices, IUsuarioServices, IDisposable
     {
+        #region [Propiedades]
         /// <summary>
         /// Acceso a datos a la entidad Usuario
         /// </summary>
         private readonly IUsuariosData _data;
 
         /// <summary>
+        /// Acceso a datos informacion complementaria
+        /// </summary>
+        private readonly IUsuarioInfoData _dataInfoUser;
+
+        /// <summary>
+        /// Acceso a datos a la tabla UsuariosEstado
+        /// </summary>
+        private readonly IUsuariosEstadoData _dataEstados; 
+        #endregion
+
+        #region [Constructor]
+        /// <summary>
         /// Crear constructor de negocio con el acceso de datos a Usuario
         /// </summary>
-        /// <param name="data"></param>
-        public UsuarioServices(IUsuariosData data)
+        /// <param name="data">acceso a datos usuarios</param>
+        /// <param name="dataInfoUser">acceso a datos informacion complementaria</param>
+        /// <param name="dataEstados">acceso a datos la tabla UsuariosEstado</param>
+        public UsuarioServices(IUsuariosData data, IUsuarioInfoData dataInfoUser, IUsuariosEstadoData dataEstados)
         {
             _data = data;
-        }
+            _dataInfoUser = dataInfoUser;
+            _dataEstados = dataEstados;
+        } 
+        #endregion
+
+        #region [Acceso a Datos de Usuarios]
 
         /// <summary>
         /// Consulta el usuario por id
@@ -160,6 +181,37 @@ namespace Netactica.Services
         }
 
         /// <summary>
+        /// Modifica el lenguaje del usuario
+        /// </summary>
+        /// <param name="userResponse">usuario response</param>
+        /// <returns>UsuarioResponse</returns>
+        public ResponseModel ModificarLenguaje(UsuarioResponse userResponse)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+
+                var usuario = Mapper.Map<UsuarioResponse, Usuario>(userResponse);
+
+                usuario = _data.ModificarLenguaje(usuario);
+                userResponse = Mapper.Map<Usuario, UsuarioResponse>(usuario);
+
+                response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} guardado correctamente");
+            }
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorFatal($"{nameof(UsuarioServices)}  {nameof(ModificarLenguaje)}", ex);
+                response.Fail(ex, $"Error en => {nameof(ModificarLenguaje)}");
+            }
+
+            return response;
+        }
+
+        /// <summary>
         /// Modificar un usuario existente en base de datos por id
         /// </summary>
         /// <param name="userResponse">UsuarioResponse</param>
@@ -197,6 +249,123 @@ namespace Netactica.Services
             return response;
         }
 
+        #endregion [Acceso a Datos de Usuarios]
+
+        #region [Acceso a datos Informacion Complementaria]
+
+        /// <summary>
+        /// Consulta la informacion complementaria del usuario por id
+        /// </summary>
+        /// <param name="usuarioId">id del usuario</param>
+        /// <returns>UsuarioInfoResponse</returns>
+
+        public ResponseModel ConsultarUsuarioInfoPorId(Guid usuarioId)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                var user = _dataInfoUser.ConsultarInfoPorId(usuarioId);
+                var userResponse = Mapper.Map<UsuarioInfo, UsuarioInfoResponse>(user);
+                response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} consultado correctamente");
+            }
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorFatal($"{nameof(UsuarioServices)}  {nameof(ConsultarUsuarioInfoPorId)}", ex);
+                response.Fail(ex, $"Error en => {nameof(ConsultarUsuarioInfoPorId)}");
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// Inserta la informacion complementaria si el usuario no la tiena
+        /// </summary>
+        /// <param name="userResponse">informacion complementaria del usuario</param>
+        /// <returns>UsuarioInfoResponse</returns>
+        public ResponseModel GuardarInformacionUsuario(UsuarioInfoResponse userResponse)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                var user = Mapper.Map<UsuarioInfoResponse, UsuarioInfo>(userResponse);
+                user = _dataInfoUser.GuardarUsuario(user);
+
+                userResponse = Mapper.Map<UsuarioInfo, UsuarioInfoResponse>(user);
+                response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} guardado correctamente");
+            }
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorFatal($"{nameof(UsuarioServices)}  {nameof(GuardarInformacionUsuario)}", ex);
+                response.Fail(ex, $"Error en => {nameof(GuardarInformacionUsuario)}");
+            }
+            return response;
+        }
+
+        /// <summary>
+        /// Inserta la informacion complementaria si el usuario no la tiena
+        /// </summary>
+        /// <param name="userResponse">informacion complementaria del usuario</param>
+        /// <returns>UsuarioInfoResponse</returns>
+        public ResponseModel ModificarInformacionUsuario(UsuarioInfoResponse userResponse)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                var user = Mapper.Map<UsuarioInfoResponse, UsuarioInfo>(userResponse);
+                user = _dataInfoUser.ModificarUsuario(user);
+
+                userResponse = Mapper.Map<UsuarioInfo, UsuarioInfoResponse>(user);
+                response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} guardado correctamente");
+            }
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorFatal($"{nameof(UsuarioServices)}  {nameof(ModificarInformacionUsuario)}", ex);
+                response.Fail(ex, $"Error en => {nameof(ModificarInformacionUsuario)}");
+            }
+            return response;
+        }
+
+        #endregion [Acceso a datos Informacion Complementaria]
+
+        #region [UsuariosEstados]
+        /// <summary>
+        /// Consulta el listado de estdos de los usuarios
+        /// </summary>
+        /// <returns>List UsuarioResponse</returns>
+
+        public ResponseModel ConsultarEstadosUsuarios()
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                var estados = _dataEstados.GetModelList();
+                var estadosResponse = Mapper.Map<List<UsuariosEstado>, List<DropDownItem>>(estados);
+                response.SuccesCall(estadosResponse);
+            }
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorFatal($"{nameof(UsuarioServices)}  {nameof(ConsultarEstadosUsuarios)}", ex);
+                response.Fail(ex, $"Error en => {nameof(ConsultarEstadosUsuarios)}");
+            }
+            return response;
+        } 
+        #endregion
+
         #region [Dispose]
 
         private bool disposedValue;
@@ -208,6 +377,14 @@ namespace Netactica.Services
                 if (disposing)
                 {
                     // TODO: eliminar el estado administrado (objetos administrados)
+                    if (_data != null)
+                        _data.Dispose();
+
+                    if (_dataInfoUser != null)
+                        _dataInfoUser.Dispose();
+
+                    if (_dataEstados != null)
+                        _dataEstados.Dispose();
                 }
 
                 // TODO: liberar los recursos no administrados (objetos no administrados) y reemplazar el finalizador
@@ -238,6 +415,8 @@ namespace Netactica.Services
     /// </summary>
     public interface IUsuarioServices : IBaseServices, IDisposable
     {
+        #region [Acceso a datos Usuarios]
+
         /// <summary>
         /// Guardar un usuario nuevo en la base de datos
         /// </summary>
@@ -275,5 +454,49 @@ namespace Netactica.Services
         /// <param name="userResponse">UsuarioResponse contraseña a modificar</param>
         /// <returns>UsuarioResponse</returns>
         ResponseModel ModificarPassword(UsuarioResponse userResponse);
+
+        /// <summary>
+        /// Modifica el lenguaje del usuario
+        /// </summary>
+        /// <param name="userResponse">usuario response</param>
+        /// <returns>UsuarioResponse</returns>
+        ResponseModel ModificarLenguaje(UsuarioResponse userResponse);
+
+        #endregion [Acceso a datos Usuarios]
+
+        #region [Acceso a datos Informacion Complementaria]
+
+        /// <summary>
+        /// Consulta la informacion complementaria del usuario por id
+        /// </summary>
+        /// <param name="usuarioId">id del usuario</param>
+        /// <returns>UsuarioInfoResponse</returns>
+
+        ResponseModel ConsultarUsuarioInfoPorId(Guid usuarioId);
+
+        /// <summary>
+        /// Inserta la informacion complementaria si el usuario no la tiena
+        /// </summary>
+        /// <param name="userResponse">informacion complementaria del usuario</param>
+        /// <returns>UsuarioInfoResponse</returns>
+        ResponseModel GuardarInformacionUsuario(UsuarioInfoResponse userResponse);
+
+        /// <summary>
+        /// Inserta la informacion complementaria si el usuario no la tiena
+        /// </summary>
+        /// <param name="userResponse">informacion complementaria del usuario</param>
+        /// <returns>UsuarioInfoResponse</returns>
+        ResponseModel ModificarInformacionUsuario(UsuarioInfoResponse userResponse);
+
+        #endregion [Acceso a datos Informacion Complementaria]
+
+        #region [UsuariosEstados]
+        /// <summary>
+        /// Consulta el listado de estdos de los usuarios
+        /// </summary>
+        /// <returns>List UsuarioResponse</returns>
+
+        ResponseModel ConsultarEstadosUsuarios(); 
+        #endregion
     }
 }

@@ -22,7 +22,7 @@ namespace Netactica.Data
         {
         }
 
-        public Repository(IDbConnection connection) 
+        public Repository(IDbConnection connection)
         {
             DataBase = connection;
         }

@@ -20,7 +20,7 @@ namespace Netactica.Data
         }
 
         /// <summary>
-        /// Guarda un usuario nuevo en base de datos
+        /// Guarda un usuario nuevo en base de datos, guarda la informacion complementaria vacia y tambien guarda el rol del usuario invitado temporalmente
         /// </summary>
         /// <param name="usuario">Usuario</param>
         /// <returns>Usuario</returns>
@@ -31,16 +31,16 @@ namespace Netactica.Data
             usuario.UsuarioId = usuario.UsuarioId == Guid.Empty ? Guid.NewGuid() : usuario.UsuarioId;
             try
             {
-
-                using (connection = DataBase) 
+                using (connection = DataBase)
                 {
                     connection.Open();
-                    using (var trx = connection.BeginTransaction()) 
+                    using (var trx = connection.BeginTransaction())
                     {
                         try
                         {
                             var parameters = new DynamicParameters();
                             parameters.Add("UsuarioId", usuario.UsuarioId, dbType: DbType.Guid, direction: ParameterDirection.Output);
+                            parameters.Add("RolId", dbType: DbType.Guid, direction: ParameterDirection.Output);
                             parameters.Add("UsuarioNombre", usuario.UsuarioNombre);
                             parameters.Add("UsuarioCorreo", usuario.UsuarioCorreo);
                             parameters.Add("UsuarioCrea", usuario.UsuarioCrea);
@@ -50,9 +50,10 @@ namespace Netactica.Data
                             connection.Execute("NetacticaDB_SP_Usuario_Insertar", param: parameters, transaction: trx, commandType: CommandType.StoredProcedure);
 
                             var id = parameters.Get<Guid>("UsuarioId");
+                            var rolId = parameters.Get<Guid>("RolId");
 
                             usuario = ConsultarUsuario(usuarioId: id, transaction: trx);
-
+                            usuario.Pw = null;
                             trx.Commit();
                         }
                         catch (Exception)
@@ -68,11 +69,10 @@ namespace Netactica.Data
             {
                 throw;
             }
-            finally 
+            finally
             {
                 if (connection != null)
                     connection.Dispose();
-                
             }
         }
 
@@ -155,7 +155,7 @@ namespace Netactica.Data
         {
             try
             {
-                int count = Count("WHERE UsuarioId = @id", new { id = usuario.UsuarioId },transaction : transaction);
+                int count = Count("WHERE UsuarioId = @id", new { id = usuario.UsuarioId }, transaction: transaction);
 
                 return count > 0;
             }
@@ -175,7 +175,7 @@ namespace Netactica.Data
             try
             {
                 int count = 0;
-                if (ExisteUsuarioPorId(usuario,transaction))
+                if (ExisteUsuarioPorId(usuario, transaction))
                     count = Count("WHERE UsuarioNombre = @nombre AND UsuarioId <> @id", new { id = usuario.UsuarioId, nombre = usuario.UsuarioNombre }, transaction: transaction);
                 else
                     count = Count("WHERE UsuarioNombre = @nombre", new { nombre = usuario.UsuarioNombre }, transaction: transaction);
@@ -219,6 +219,56 @@ namespace Netactica.Data
                 throw;
             }
         }
+
+        /// <summary>
+        /// Actualiza el lenguaje del usuario
+        /// </summary>
+        /// <param name="usuario">usuario</param>
+        /// <returns>Usuario</returns>
+        public Usuario ModificarLenguaje(Usuario usuario)
+        {
+            try
+            {
+                var oldUser = GetFindById(usuario.UsuarioId);
+                if (oldUser == null)
+                    throw new BusinessException($"No existe el usuario por id {usuario.UsuarioId}");
+
+                oldUser.LenguajeId = usuario.LenguajeId;
+                oldUser.FechaModificacion = DateTime.Now;
+                oldUser.UsuarioModifica = usuario.UsuarioModifica;
+
+                Update(oldUser);
+
+                usuario = ConsultarUsuario(usuario.UsuarioId);
+
+                usuario.Pw = null;
+
+                return usuario;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Verifica si un rol es super administrador
+        /// </summary>
+        /// <param name="rolId">id del rol</param>
+        /// <param name="transaction">transaccion sql</param>
+        /// <returns>true si es super administrador, false si no</returns>
+        public bool IsRolAdmon(Guid rolId, IDbTransaction transaction = null) 
+        {
+            try
+            {
+                bool isAdmon = (bool)DataBase.ExecuteScalar(sql: "SELECT DBO.IsAdmonRol(@rol) IsAdmon ", param: new { rol = rolId }, commandType: CommandType.Text);
+                return isAdmon;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 
     /// <summary>
@@ -235,7 +285,7 @@ namespace Netactica.Data
         Usuario ConsultarUsuario(Guid? usuarioId = null, string nombreUsuario = null, IDbTransaction transaction = null);
 
         /// <summary>
-        /// Guarda un usuario nuevo en base de datos
+        /// Guarda un usuario nuevo en base de datos, guarda la informacion complementaria vacia y tambien guarda el rol del usuario invitado temporalmente
         /// </summary>
         /// <param name="usuario">Usuario</param>
         /// <returns>Usuario</returns>
@@ -254,5 +304,20 @@ namespace Netactica.Data
         /// <param name="usuario">usuario</param>
         /// <returns>Usuario</returns>
         Usuario ModificarPassword(Usuario usuario);
+
+        /// <summary>
+        /// Actualiza el lenguaje del usuario
+        /// </summary>
+        /// <param name="usuario">usuario</param>
+        /// <returns>Usuario</returns>
+        Usuario ModificarLenguaje(Usuario usuario);
+
+        /// <summary>
+        /// Verifica si un rol es super administrador
+        /// </summary>
+        /// <param name="rolId">id del rol</param>
+        /// <param name="transaction">transaccion sql</param>
+        /// <returns>true si es super administrador, false si no</returns>
+        bool IsRolAdmon(Guid rolId, IDbTransaction transaction = null);
     }
 }

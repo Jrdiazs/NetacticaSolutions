@@ -11,6 +11,8 @@ namespace Netactica.Services
             Mapper.Initialize((config) =>
             {
                 ConfigUserResponse(config);
+                ConfigUserInfoResponse(config);
+                ConfigUsuariosEstadosResponse(config);
             });
         }
 
@@ -48,6 +50,55 @@ namespace Netactica.Services
                 ForMember(x => x.UsuarioCrea, o => o.MapFrom(s => s.UsuarioCrea)).
                 ForMember(x => x.Pw, o => o.MapFrom(s => s.Password)).
                 ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica));
+        }
+
+        public static void ConfigUserInfoResponse(IMapperConfigurationExpression config)
+        {
+            config.CreateMap<UsuarioInfo, UsuarioInfoResponse>().
+               ForMember(x => x.Apellidos, o => o.MapFrom(s => s.Apellidos)).
+               ForMember(x => x.CorreoAlternativo, o => o.MapFrom(s => s.CorreoAlternativo)).
+               ForMember(x => x.Direccion, o => o.MapFrom(s => s.Direccion)).
+               ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
+               ForMember(x => x.FechaModificacion, o => o.MapFrom(s => s.FechaModificacion)).
+               ForMember(x => x.FechaNacimiento, o => o.MapFrom(s => s.FechaNacimiento)).
+               ForMember(x => x.Id, o => o.MapFrom(s => s.UsuarioId)).
+               ForMember(x => x.Nombres, o => o.MapFrom(s => s.Nombres)).
+               ForMember(x => x.NumeroDocumento, o => o.MapFrom(s => s.Documento)).
+               ForMember(x => x.Telefono, o => o.MapFrom(s => s.Telefono)).
+               ForMember(x => x.TipoIdentificacion, o => o.MapFrom(s => s.TipoIdentificacion != null ? s.TipoIdentificacion.Alias : string.Empty)).
+               ForMember(x => x.TipoIdentificacionId, o => o.MapFrom(s => s.TipoIdentificacionId)).
+               ForMember(x => x.UsuarioCrea, o => o.MapFrom(s => s.UsuarioCrea)).
+               ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica));
+
+            config.CreateMap<UsuarioInfoResponse, UsuarioInfo>().
+               ForMember(x => x.Apellidos, o => o.MapFrom(s => s.Apellidos)).
+               ForMember(x => x.CorreoAlternativo, o => o.MapFrom(s => s.CorreoAlternativo)).
+               ForMember(x => x.Direccion, o => o.MapFrom(s => s.Direccion)).
+               ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
+               ForMember(x => x.FechaModificacion, o => o.MapFrom(s => s.FechaModificacion)).
+               ForMember(x => x.FechaNacimiento, o => o.MapFrom(s => s.FechaNacimiento)).
+               ForMember(x => x.UsuarioId, o => o.MapFrom(s => s.Id)).
+               ForMember(x => x.Nombres, o => o.MapFrom(s => s.Nombres)).
+               ForMember(x => x.Documento, o => o.MapFrom(s => s.NumeroDocumento)).
+               ForMember(x => x.Telefono, o => o.MapFrom(s => s.Telefono)).
+               ForMember(x => x.TipoIdentificacion, o => o.Ignore()).
+               ForMember(x => x.Usuario, o => o.Ignore()).
+               ForMember(x => x.TipoIdentificacionId, o => o.MapFrom(s => s.TipoIdentificacionId)).
+               ForMember(x => x.UsuarioCrea, o => o.MapFrom(s => s.UsuarioCrea)).
+               ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica));
+        }
+
+        public static void ConfigUsuariosEstadosResponse(IMapperConfigurationExpression config)
+        {
+            config.CreateMap<UsuariosEstado, DropDownItem>().
+               ForMember(x => x.Descripcion, o => o.MapFrom(s => s.DescripcionEstado)).
+               ForMember(x => x.Alias, o => o.MapFrom(s => s.Alias)).
+               ForMember(x => x.Id, o => o.MapFrom(s => s.UsuarioEstadoId));
+
+            config.CreateMap<DropDownItem, UsuariosEstado>().
+               ForMember(x => x.UsuarioEstadoId, o => o.MapFrom(s => s.Id)).
+               ForMember(x => x.Alias, o => o.MapFrom(s => s.Alias)).
+               ForMember(x => x.DescripcionEstado, o => o.MapFrom(s => s.Descripcion));
         }
     }
 }

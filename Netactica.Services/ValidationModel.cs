@@ -73,8 +73,45 @@ namespace Netactica.Services
                 MaximumLength(100).WithMessage("El nombre de usuario no pueden pasar de 100 caracteres");
 
             RuleFor(x => x.UsuarioCorreo).NotEmpty().WithMessage("El correo de usuario no pueder ser vacio").
-                MaximumLength(100).WithMessage("El correo no pueden pasar de 100 caracteres").
+                MaximumLength(100).WithMessage("El correo no puede pasar de 100 caracteres").
                 EmailAddress().WithMessage("El correo no es válido");
+        }
+    }
+
+    public class UsersInfoValidator : AbstractValidator<UsuarioInfo>
+    {
+        public UsersInfoValidator()
+        {
+            RuleFor(x => x.UsuarioId).NotEmpty().WithMessage("El id de usuario no pueder ser vacio");
+
+            RuleFor(x => x.Documento).
+               MaximumLength(50).WithMessage("El Documento no puede pasar de 50 caracteres");
+
+            RuleFor(x => x.Nombres).
+               MaximumLength(100).WithMessage("El Nombre no puede pasar de 100 caracteres");
+
+            RuleFor(x => x.Apellidos).
+                MaximumLength(100).WithMessage("El Apellido no puede pasar de 100 caracteres");
+
+            RuleFor(x => x.CorreoAlternativo).
+               MaximumLength(300).WithMessage("El Correo Alternativo no puede pasar de 300 caracteres").
+               EmailAddress().WithMessage("El correo no es válido");
+
+            RuleFor(x => x.Telefono).
+               MaximumLength(50).WithMessage("El Teléfono no puede pasar de 50 caracteres");
+
+            RuleFor(x => x.Direccion).
+               MaximumLength(500).WithMessage("La Dirección no puede pasar de 500 caracteres");
+
+            RuleFor(x => x.FechaNacimiento).
+                Custom((x, y) =>
+                {
+                    if (x.HasValue)
+                        if (!x.Value.ValidSqlDateTime())
+                        {
+                            y.AddFailure("Fecha de nacimiento inválida");
+                        }
+                });
         }
     }
 }

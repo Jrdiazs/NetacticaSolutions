@@ -12,6 +12,9 @@ namespace Netactica.Models
 
         [Column("DescripcionEstado")]
         public string DescripcionEstado { get; set; }
+
+        [Column("Alias")]
+        public string Alias { get; set; }
     }
 
     public enum EnumUsuariosEstado
