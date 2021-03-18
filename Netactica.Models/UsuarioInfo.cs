@@ -52,6 +52,5 @@ namespace Netactica.Models
 
         [NotMapped]
         public Usuario Usuario { get; set; }
-
     }
 }

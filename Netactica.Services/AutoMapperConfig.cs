@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Netactica.Models;
+using Netactica.Services.Request;
 using Netactica.Services.Response;
 
 namespace Netactica.Services
@@ -10,13 +11,16 @@ namespace Netactica.Services
         {
             Mapper.Initialize((config) =>
             {
-                ConfigUserResponse(config);
-                ConfigUserInfoResponse(config);
-                ConfigUsuariosEstadosResponse(config);
+                MappingUserResponse(config);
+                MappingUserInfoResponse(config);
+                MappingUsersStateResponse(config);
+                MappingUsersSearchRequest(config);
+                MappingUserListResponse(config);
+                MappingRolesResponse(config);
             });
         }
 
-        public static void ConfigUserResponse(IMapperConfigurationExpression config)
+        public static void MappingUserResponse(IMapperConfigurationExpression config)
         {
             config.CreateMap<Usuario, UsuarioResponse>().
                 ForMember(x => x.Correo, o => o.MapFrom(s => s.UsuarioCorreo)).
@@ -52,7 +56,7 @@ namespace Netactica.Services
                 ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica));
         }
 
-        public static void ConfigUserInfoResponse(IMapperConfigurationExpression config)
+        public static void MappingUserInfoResponse(IMapperConfigurationExpression config)
         {
             config.CreateMap<UsuarioInfo, UsuarioInfoResponse>().
                ForMember(x => x.Apellidos, o => o.MapFrom(s => s.Apellidos)).
@@ -88,7 +92,7 @@ namespace Netactica.Services
                ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica));
         }
 
-        public static void ConfigUsuariosEstadosResponse(IMapperConfigurationExpression config)
+        public static void MappingUsersStateResponse(IMapperConfigurationExpression config)
         {
             config.CreateMap<UsuariosEstado, DropDownItem>().
                ForMember(x => x.Descripcion, o => o.MapFrom(s => s.DescripcionEstado)).
@@ -99,6 +103,84 @@ namespace Netactica.Services
                ForMember(x => x.UsuarioEstadoId, o => o.MapFrom(s => s.Id)).
                ForMember(x => x.Alias, o => o.MapFrom(s => s.Alias)).
                ForMember(x => x.DescripcionEstado, o => o.MapFrom(s => s.Descripcion));
+        }
+
+        public static void MappingUsersSearchRequest(IMapperConfigurationExpression config)
+        {
+            config.CreateMap<UsuariosFiltroRequest, UsuarioFiltro>().
+               ForMember(x => x.Estado, o => o.MapFrom(s => s.EstadoId)).
+               ForMember(x => x.Identificacion, o => o.MapFrom(s => s.Documento)).
+               ForMember(x => x.NameUser, o => o.MapFrom(s => s.Nombre)).
+               ForMember(x => x.NombresCompletos, o => o.MapFrom(s => s.NombresCompletos)).
+               ForMember(x => x.Rol, o => o.MapFrom(s => s.RolId)).
+               ForMember(x => x.Tercero, o => o.MapFrom(s => s.Tercero)).
+               ForMember(x => x.Usuario, o => o.MapFrom(s => s.Usuario))
+               ;
+
+            config.CreateMap<UsuarioFiltro, UsuariosFiltroRequest>().
+                ForMember(x => x.EstadoId, o => o.MapFrom(s => s.Estado)).
+                ForMember(x => x.Documento, o => o.MapFrom(s => s.Identificacion)).
+                ForMember(x => x.Nombre, o => o.MapFrom(s => s.NameUser)).
+                ForMember(x => x.NombresCompletos, o => o.MapFrom(s => s.NombresCompletos)).
+                ForMember(x => x.RolId, o => o.MapFrom(s => s.Rol)).
+                ForMember(x => x.Tercero, o => o.MapFrom(s => s.Tercero)).
+                ForMember(x => x.Usuario, o => o.MapFrom(s => s.Usuario));
+        }
+
+        public static void MappingUserListResponse(IMapperConfigurationExpression config)
+        {
+            config.CreateMap<UsuariosListadoResponse, UsuariosListado>().
+               ForMember(x => x.Clientes, o => o.MapFrom(s => s.Clientes)).
+               ForMember(x => x.Documento, o => o.MapFrom(s => s.Documento)).
+               ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
+               ForMember(x => x.FechaUltimoIngreso, o => o.MapFrom(s => s.FechaUltimoIngreso)).
+               ForMember(x => x.NombreCompleto, o => o.MapFrom(s => s.NombreCompleto)).
+               ForMember(x => x.NumItentos, o => o.MapFrom(s => s.NumItentos)).
+               ForMember(x => x.Roles, o => o.MapFrom(s => s.Roles)).
+               ForMember(x => x.UsuarioCorreo, o => o.MapFrom(s => s.UsuarioCorreo)).
+               ForMember(x => x.UsuarioId, o => o.MapFrom(s => s.UsuarioId)).
+               ForMember(x => x.UsuarioNombre, o => o.MapFrom(s => s.UsuarioNombre))
+               ;
+
+            config.CreateMap<UsuariosListado, UsuariosListadoResponse>().
+               ForMember(x => x.Clientes, o => o.MapFrom(s => s.Clientes)).
+               ForMember(x => x.Documento, o => o.MapFrom(s => s.Documento)).
+               ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
+               ForMember(x => x.FechaUltimoIngreso, o => o.MapFrom(s => s.FechaUltimoIngreso)).
+               ForMember(x => x.NombreCompleto, o => o.MapFrom(s => s.NombreCompleto)).
+               ForMember(x => x.NumItentos, o => o.MapFrom(s => s.NumItentos)).
+               ForMember(x => x.Roles, o => o.MapFrom(s => s.Roles)).
+               ForMember(x => x.UsuarioCorreo, o => o.MapFrom(s => s.UsuarioCorreo)).
+               ForMember(x => x.UsuarioId, o => o.MapFrom(s => s.UsuarioId)).
+               ForMember(x => x.UsuarioNombre, o => o.MapFrom(s => s.UsuarioNombre));
+        }
+
+        public static void MappingRolesResponse(IMapperConfigurationExpression config)
+        {
+            config.CreateMap<RolesResponse, Roles>().
+               ForMember(x => x.Descripcion, o => o.MapFrom(s => s.Nombre)).
+               ForMember(x => x.EsSuperAdmon, o => o.MapFrom(s => s.EsSuperAdmon)).
+               ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
+               ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
+               ForMember(x => x.FechaModifica, o => o.MapFrom(s => s.FechaModifica)).
+               ForMember(x => x.RolId, o => o.MapFrom(s => s.Id)).
+               ForMember(x => x.Tercero, o => o.Ignore()).
+               ForMember(x => x.TerceroId, o => o.MapFrom(s => s.Tercero)).
+               ForMember(x => x.UsuarioCrea, o => o.MapFrom(s => s.UsuarioCrea)).
+               ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica))
+               ;
+
+            config.CreateMap<Roles, RolesResponse>().
+                ForMember(x => x.Nombre, o => o.MapFrom(s => s.Descripcion)).
+                ForMember(x => x.EsSuperAdmon, o => o.MapFrom(s => s.EsSuperAdmon)).
+                ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
+                ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
+                ForMember(x => x.FechaModifica, o => o.MapFrom(s => s.FechaModifica)).
+                ForMember(x => x.Id, o => o.MapFrom(s => s.RolId)).
+                ForMember(x => x.Tercero, o => o.MapFrom(s => s.TerceroId)).
+                ForMember(x => x.TerceroNombre, o => o.MapFrom(s => s.Tercero != null ? s.Tercero.NombreComercial : string.Empty)).
+                ForMember(x => x.UsuarioCrea, o => o.MapFrom(s => s.UsuarioCrea)).
+                ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica));
         }
     }
 }

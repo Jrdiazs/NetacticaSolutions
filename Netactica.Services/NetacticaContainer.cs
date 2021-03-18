@@ -16,11 +16,11 @@ namespace Netactica.Services
             Bind<IUsuariosEstadoData>().To<UsuariosEstadoData>();
             Bind<IUsuarioInfoData>().To<UsuarioInfoData>();
             Bind<IUsuariosData>().To<UsuariosData>();
-            
 
             //Servicios
             Bind<IReservasServices>().To<ReservasServices>();
             Bind<IUsuarioServices>().To<UsuarioServices>();
+            Bind<IRolesServices>().To<RolesServices>();
         }
     }
 }

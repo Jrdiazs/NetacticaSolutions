@@ -5,7 +5,7 @@ using System;
 
 namespace Netactica.Services
 {
-    public class ReservasValidator : AbstractValidator<Reservas>
+    public class ReservasValidator : ValidatorModel<Reservas>
     {
         public ReservasValidator()
         {
@@ -63,7 +63,7 @@ namespace Netactica.Services
         }
     }
 
-    public class UsersValidator : AbstractValidator<Usuario>
+    public class UsersValidator : ValidatorModel<Usuario>
     {
         public UsersValidator()
         {
@@ -78,7 +78,7 @@ namespace Netactica.Services
         }
     }
 
-    public class UsersInfoValidator : AbstractValidator<UsuarioInfo>
+    public class UsersInfoValidator : ValidatorModel<UsuarioInfo>
     {
         public UsersInfoValidator()
         {
@@ -114,4 +114,41 @@ namespace Netactica.Services
                 });
         }
     }
+
+    public class UsersFilterValidator : ValidatorModel<UsuarioFiltro>
+    {
+        public UsersFilterValidator()
+        {
+            RuleFor(x => x.Rol).NotEmpty().WithMessage("El Rol es requerido");
+
+            RuleFor(x => x.Usuario).
+               NotEmpty().WithMessage("El Id del usuario es requerido");
+        }
+    }
+
+    public class RolesValidator : ValidatorModel<Roles>
+    {
+        public RolesValidator()
+        {
+            RuleFor(x => x.RolId).NotEmpty().WithMessage("El Rol id es requerido");
+
+            RuleFor(x => x.Descripcion).
+               NotEmpty().WithMessage("La descripción del rol es requerida").MaximumLength(50).
+               WithMessage("La descripción del rol no puede pasar de 50 caracteres");
+        }
+    }
+
+    /// <summary>
+    /// Plantilla para crear validadores de modelos
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ValidatorModel<T> : AbstractValidator<T>, IValidatorModel<T>
+    {
+    }
+
+    /// <summary>
+    /// Plantilla para crear validadores de modelos
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public interface IValidatorModel<T> : IValidator<T> { }
 }

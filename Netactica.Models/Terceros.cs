@@ -41,7 +41,6 @@ namespace Netactica.Models
         [NotMapped]
         public TipoIdentificacion TipoIdentificacion { get; set; }
 
-
         [NotMapped]
         public TipoTercero TipoTercero { get; set; }
     }

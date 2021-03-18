@@ -2,6 +2,7 @@
 using Netactica.Models;
 using Netactica.Models.Exceptions;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 
@@ -92,7 +93,7 @@ namespace Netactica.Data
 
                 var oldUser = GetFindById(usuario.UsuarioId);
                 if (oldUser == null)
-                    throw new BusinessException($"No existe el usuario por id {usuario.UsuarioId}");
+                    throw new NotFoundException($"No existe el usuario por id {usuario.UsuarioId}");
 
                 oldUser.UsuarioCorreo = usuario.UsuarioCorreo;
                 oldUser.FechaModificacion = usuario.FechaModificacion;
@@ -110,6 +111,14 @@ namespace Netactica.Data
                 usuario.Pw = null;
 
                 return usuario;
+            }
+            catch (BusinessException)
+            {
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                throw;
             }
             catch (Exception)
             {
@@ -199,7 +208,7 @@ namespace Netactica.Data
             {
                 var oldUser = GetFindById(usuario.UsuarioId);
                 if (oldUser == null)
-                    throw new BusinessException($"No existe el usuario por id {usuario.UsuarioId}");
+                    throw new NotFoundException($"No existe el usuario por id {usuario.UsuarioId}");
 
                 oldUser.Pw = usuario.Pw;
                 oldUser.FechaModificacion = DateTime.Now;
@@ -213,6 +222,14 @@ namespace Netactica.Data
                 usuario.Pw = null;
 
                 return usuario;
+            }
+            catch (BusinessException)
+            {
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                throw;
             }
             catch (Exception)
             {
@@ -231,7 +248,7 @@ namespace Netactica.Data
             {
                 var oldUser = GetFindById(usuario.UsuarioId);
                 if (oldUser == null)
-                    throw new BusinessException($"No existe el usuario por id {usuario.UsuarioId}");
+                    throw new NotFoundException($"No existe el usuario por id {usuario.UsuarioId}");
 
                 oldUser.LenguajeId = usuario.LenguajeId;
                 oldUser.FechaModificacion = DateTime.Now;
@@ -245,6 +262,14 @@ namespace Netactica.Data
 
                 return usuario;
             }
+            catch (BusinessException)
+            {
+                throw;
+            }
+            catch (NotFoundException)
+            {
+                throw;
+            }
             catch (Exception)
             {
                 throw;
@@ -257,12 +282,68 @@ namespace Netactica.Data
         /// <param name="rolId">id del rol</param>
         /// <param name="transaction">transaccion sql</param>
         /// <returns>true si es super administrador, false si no</returns>
-        public bool IsRolAdmon(Guid rolId, IDbTransaction transaction = null) 
+        public bool IsRolAdmon(Guid rolId, IDbTransaction transaction = null)
         {
             try
             {
                 bool isAdmon = (bool)DataBase.ExecuteScalar(sql: "SELECT DBO.IsAdmonRol(@rol) IsAdmon ", param: new { rol = rolId }, commandType: CommandType.Text);
                 return isAdmon;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Consulta el listado de usuarios para un super administrador
+        /// </summary>
+        /// <param name="filtro">filtro</param>
+        /// <param name="transaction">transaccion sql</param>
+        /// <returns>List UsuariosListado</returns>
+        public List<UsuariosListado> ConsultarUsuariosConsultaSuperAdmon(UsuarioFiltro filtro, IDbTransaction transaction = null)
+        {
+            try
+            {
+                var query = DataBase.Query<UsuariosListado>(sql: "NetacticaDB_SP_UsuariosConsultar_Admon", param: new
+                {
+                    UsuarioNombre = filtro.NameUser,
+                    UsuarioEstadoId = filtro.Estado,
+                    Documento = filtro.Identificacion,
+                    NombreCompleto = filtro.NombresCompletos,
+                    TerceroId = filtro.Tercero,
+                    UsuarioId = filtro.Usuario
+                }, transaction: transaction, commandType: CommandType.StoredProcedure).ToList();
+
+                return query ?? new List<UsuariosListado>();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Consulta el listado de usuarios para un administrador cliente
+        /// </summary>
+        /// <param name="filtro">filtro</param>
+        /// <param name="transaction">transaccion sql</param>
+        /// <returns>List UsuariosListado</returns>
+        public List<UsuariosListado> ConsultarUsuariosConsultaAdmonCliente(UsuarioFiltro filtro, IDbTransaction transaction = null)
+        {
+            try
+            {
+                var query = DataBase.Query<UsuariosListado>(sql: "NetacticaDB_SP_UsuariosConsultar_NoAdmon", param: new
+                {
+                    UsuarioNombre = filtro.NameUser,
+                    UsuarioEstadoId = filtro.Estado,
+                    Documento = filtro.Identificacion,
+                    NombreCompleto = filtro.NombresCompletos,
+                    TerceroId = filtro.Tercero,
+                    UsuarioId = filtro.Usuario
+                }, transaction: transaction, commandType: CommandType.StoredProcedure).ToList();
+
+                return query ?? new List<UsuariosListado>();
             }
             catch (Exception)
             {
@@ -319,5 +400,21 @@ namespace Netactica.Data
         /// <param name="transaction">transaccion sql</param>
         /// <returns>true si es super administrador, false si no</returns>
         bool IsRolAdmon(Guid rolId, IDbTransaction transaction = null);
+
+        /// <summary>
+        /// Consulta el listado de usuarios para un super administrador
+        /// </summary>
+        /// <param name="filtro">filtro</param>
+        /// <param name="transaction">transaccion sql</param>
+        /// <returns>List UsuariosListado</returns>
+        List<UsuariosListado> ConsultarUsuariosConsultaSuperAdmon(UsuarioFiltro filtro, IDbTransaction transaction = null);
+
+        /// <summary>
+        /// Consulta el listado de usuarios para un administrador cliente
+        /// </summary>
+        /// <param name="filtro">filtro</param>
+        /// <param name="transaction">transaccion sql</param>
+        /// <returns>List UsuariosListado</returns>
+        List<UsuariosListado> ConsultarUsuariosConsultaAdmonCliente(UsuarioFiltro filtro, IDbTransaction transaction = null);
     }
 }

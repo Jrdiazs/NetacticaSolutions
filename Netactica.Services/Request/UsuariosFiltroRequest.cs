@@ -14,7 +14,7 @@ namespace Netactica.Services.Request
 
         public Guid? Tercero { get; set; }
 
-        public Guid? Usuario { get; set; }
+        public Guid Usuario { get; set; }
 
         public Guid RolId { get; set; }
     }

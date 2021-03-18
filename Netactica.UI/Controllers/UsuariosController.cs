@@ -1,4 +1,5 @@
 ﻿using Netactica.Services;
+using Netactica.Services.Request;
 using Netactica.Services.Response;
 using System;
 using System.Web.Http;
@@ -9,13 +10,16 @@ namespace Netactica.UI.Controllers
     public class UsuariosController : ApiController
     {
         #region [Servicios]
+
         /// <summary>
         /// Servicio de base de datos
         /// </summary>
-        private readonly IUsuarioServices _services; 
-        #endregion
+        private readonly IUsuarioServices _services;
+
+        #endregion [Servicios]
 
         #region [Constructor]
+
         /// <summary>
         /// Constructor de la clase con el objeto de servicio ya previamente instanciado
         /// </summary>
@@ -23,8 +27,9 @@ namespace Netactica.UI.Controllers
         public UsuariosController(IUsuarioServices services)
         {
             _services = services;
-        } 
-        #endregion
+        }
+
+        #endregion [Constructor]
 
         #region [Usuarios]
 
@@ -40,6 +45,27 @@ namespace Netactica.UI.Controllers
             try
             {
                 var response = _services.ConsultarUsuarioPorId(usuarioId);
+
+                return Ok(response);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Consulta el listado de usuarios de acuerdo al rol del usuario que realice la consulta
+        /// </summary>
+        /// <param name="request">request</param>
+        /// <returns>List UsuariosListadoResponse</returns>
+        [HttpPost]
+        [Route("ConsultarUsuariosAdministrador")]
+        public IHttpActionResult ConsultarUsuariosAdministrador([FromBody] UsuariosFiltroRequest request)
+        {
+            try
+            {
+                var response = _services.ConsultarUsuariosAdministrador(request);
 
                 return Ok(response);
             }
@@ -225,6 +251,7 @@ namespace Netactica.UI.Controllers
         #endregion [UsuariosInfo]
 
         #region [Estados Usuarios]
+
         /// <summary>
         /// Consulta el listado de estdos de los usuarios
         /// </summary>
@@ -244,7 +271,8 @@ namespace Netactica.UI.Controllers
             {
                 throw;
             }
-        } 
-        #endregion
+        }
+
+        #endregion [Estados Usuarios]
     }
 }

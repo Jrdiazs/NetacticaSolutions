@@ -17,7 +17,7 @@ namespace Netactica.Models
         public string Alias { get; set; }
     }
 
-    public enum EnumTipoIdentificacion 
+    public enum EnumTipoIdentificacion
     {
         CC = 1,
         CE = 2,

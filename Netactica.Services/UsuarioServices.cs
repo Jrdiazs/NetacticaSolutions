@@ -2,6 +2,7 @@
 using Netactica.Data;
 using Netactica.Models;
 using Netactica.Models.Exceptions;
+using Netactica.Services.Request;
 using Netactica.Services.Response;
 using Netactica.Tools;
 using Netactica.Tools.StringTools;
@@ -16,6 +17,7 @@ namespace Netactica.Services
     public class UsuarioServices : BaseServices, IUsuarioServices, IDisposable
     {
         #region [Propiedades]
+
         /// <summary>
         /// Acceso a datos a la entidad Usuario
         /// </summary>
@@ -29,10 +31,12 @@ namespace Netactica.Services
         /// <summary>
         /// Acceso a datos a la tabla UsuariosEstado
         /// </summary>
-        private readonly IUsuariosEstadoData _dataEstados; 
-        #endregion
+        private readonly IUsuariosEstadoData _dataEstados;
+
+        #endregion [Propiedades]
 
         #region [Constructor]
+
         /// <summary>
         /// Crear constructor de negocio con el acceso de datos a Usuario
         /// </summary>
@@ -44,10 +48,50 @@ namespace Netactica.Services
             _data = data;
             _dataInfoUser = dataInfoUser;
             _dataEstados = dataEstados;
-        } 
-        #endregion
+        }
+
+        #endregion [Constructor]
 
         #region [Acceso a Datos de Usuarios]
+
+        /// <summary>
+        /// Consulta el listado de usuarios de acuerdo al rol del usuario que realice la consulta
+        /// </summary>
+        /// <param name="request">request</param>
+        /// <returns>List UsuariosListadoResponse</returns>
+        public ResponseModel ConsultarUsuariosAdministrador(UsuariosFiltroRequest request)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                var filtro = Mapper.Map<UsuariosFiltroRequest, UsuarioFiltro>(request);
+
+                Validator<UsuarioFiltro, UsersFilterValidator>(filtro);
+
+                bool isSuperAdmon = _data.IsRolAdmon(filtro.Rol);
+
+                var query = isSuperAdmon ? _data.ConsultarUsuariosConsultaSuperAdmon(filtro) :
+                    _data.ConsultarUsuariosConsultaAdmonCliente(filtro);
+
+                var usuarios = Mapper.Map<List<UsuariosListado>, List<UsuariosListadoResponse>>(query);
+
+                response.SuccesCall(usuarios, "Consulta cargada correctamente");
+            }
+            catch (NotFoundException ex)
+            {
+                response.NotFound(ex);
+            }
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorFatal($"{nameof(UsuarioServices)}  {nameof(ConsultarUsuariosAdministrador)}", ex);
+                response.Fail(ex, $"Error en => {nameof(ConsultarUsuariosAdministrador)}");
+            }
+            return response;
+        }
 
         /// <summary>
         /// Consulta el usuario por id
@@ -60,8 +104,19 @@ namespace Netactica.Services
             try
             {
                 var user = _data.ConsultarUsuario(usuarioId);
-                var userResponse = Mapper.Map<Usuario, UsuarioResponse>(user);
-                response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} consultado correctamente");
+                if (user != null)
+                {
+                    var userResponse = Mapper.Map<Usuario, UsuarioResponse>(user);
+                    response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} consultado correctamente");
+                }
+                else
+                {
+                    response.NotFound("No se encuentra el usuario por id");
+                }
+            }
+            catch (NotFoundException ex)
+            {
+                response.NotFound(ex);
             }
             catch (BusinessException ex)
             {
@@ -86,8 +141,19 @@ namespace Netactica.Services
             try
             {
                 var user = _data.ConsultarUsuario(nombreUsuario: nombreUsuario);
-                var userResponse = Mapper.Map<Usuario, UsuarioResponse>(user);
-                response.SuccesCall(userResponse, $" Usuario con nombre '{userResponse.Nombre}' consultado correctamente");
+                if (user != null)
+                {
+                    var userResponse = Mapper.Map<Usuario, UsuarioResponse>(user);
+                    response.SuccesCall(userResponse, $" Usuario con nombre '{userResponse.Nombre}' consultado correctamente");
+                }
+                else
+                {
+                    response.NotFound($"No se encuentra el usuario por nombre {nombreUsuario}");
+                }
+            }
+            catch (NotFoundException ex)
+            {
+                response.NotFound(ex);
             }
             catch (BusinessException ex)
             {
@@ -113,7 +179,7 @@ namespace Netactica.Services
             {
                 var usuario = Mapper.Map<UsuarioResponse, Usuario>(userResponse);
 
-                Validator(usuario, new UsersValidator());
+                Validator<Usuario, UsersValidator>(usuario);
 
                 ///Para insertar la contraseña tiene que estar en base 64
                 if (!usuario.Pw.IsEmpty() && usuario.Pw.IsBase64())
@@ -127,6 +193,10 @@ namespace Netactica.Services
                 var newUser = _data.GuardarUsuario(usuario);
                 userResponse = Mapper.Map<Usuario, UsuarioResponse>(newUser);
                 response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} creado correctamente");
+            }
+            catch (NotFoundException ex)
+            {
+                response.NotFound(ex);
             }
             catch (BusinessException ex)
             {
@@ -167,6 +237,10 @@ namespace Netactica.Services
 
                 response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} guardado correctamente");
             }
+            catch (NotFoundException ex)
+            {
+                response.NotFound(ex);
+            }
             catch (BusinessException ex)
             {
                 response.Fail(ex);
@@ -190,13 +264,16 @@ namespace Netactica.Services
             ResponseModel response = new ResponseModel();
             try
             {
-
                 var usuario = Mapper.Map<UsuarioResponse, Usuario>(userResponse);
 
                 usuario = _data.ModificarLenguaje(usuario);
                 userResponse = Mapper.Map<Usuario, UsuarioResponse>(usuario);
 
                 response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} guardado correctamente");
+            }
+            catch (NotFoundException ex)
+            {
+                response.NotFound(ex);
             }
             catch (BusinessException ex)
             {
@@ -232,10 +309,15 @@ namespace Netactica.Services
                     usuario.Pw = pwEncode;
                 }
 
-                Validator(usuario, new UsersValidator());
+                Validator<Usuario, UsersValidator>(usuario);
+
                 var newUser = _data.ModificarUsuario(usuario);
                 userResponse = Mapper.Map<Usuario, UsuarioResponse>(newUser);
                 response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} guardado correctamente");
+            }
+            catch (NotFoundException ex)
+            {
+                response.NotFound(ex);
             }
             catch (BusinessException ex)
             {
@@ -265,8 +347,19 @@ namespace Netactica.Services
             try
             {
                 var user = _dataInfoUser.ConsultarInfoPorId(usuarioId);
-                var userResponse = Mapper.Map<UsuarioInfo, UsuarioInfoResponse>(user);
-                response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} consultado correctamente");
+                if (user != null)
+                {
+                    var userResponse = Mapper.Map<UsuarioInfo, UsuarioInfoResponse>(user);
+                    response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} consultado correctamente");
+                }
+                else
+                {
+                    response.NotFound($"No se encuentra la información por id {usuarioId}");
+                }
+            }
+            catch (NotFoundException ex)
+            {
+                response.NotFound(ex);
             }
             catch (BusinessException ex)
             {
@@ -296,6 +389,10 @@ namespace Netactica.Services
                 userResponse = Mapper.Map<UsuarioInfo, UsuarioInfoResponse>(user);
                 response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} guardado correctamente");
             }
+            catch (NotFoundException ex)
+            {
+                response.NotFound(ex);
+            }
             catch (BusinessException ex)
             {
                 response.Fail(ex);
@@ -324,6 +421,10 @@ namespace Netactica.Services
                 userResponse = Mapper.Map<UsuarioInfo, UsuarioInfoResponse>(user);
                 response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} guardado correctamente");
             }
+            catch (NotFoundException ex)
+            {
+                response.NotFound(ex);
+            }
             catch (BusinessException ex)
             {
                 response.Fail(ex);
@@ -339,6 +440,7 @@ namespace Netactica.Services
         #endregion [Acceso a datos Informacion Complementaria]
 
         #region [UsuariosEstados]
+
         /// <summary>
         /// Consulta el listado de estdos de los usuarios
         /// </summary>
@@ -363,8 +465,9 @@ namespace Netactica.Services
                 response.Fail(ex, $"Error en => {nameof(ConsultarEstadosUsuarios)}");
             }
             return response;
-        } 
-        #endregion
+        }
+
+        #endregion [UsuariosEstados]
 
         #region [Dispose]
 
@@ -462,6 +565,13 @@ namespace Netactica.Services
         /// <returns>UsuarioResponse</returns>
         ResponseModel ModificarLenguaje(UsuarioResponse userResponse);
 
+        /// <summary>
+        /// Consulta el listado de usuarios de acuerdo al rol del usuario que realice la consulta
+        /// </summary>
+        /// <param name="request">request</param>
+        /// <returns>List UsuariosListadoResponse</returns>
+        ResponseModel ConsultarUsuariosAdministrador(UsuariosFiltroRequest request);
+
         #endregion [Acceso a datos Usuarios]
 
         #region [Acceso a datos Informacion Complementaria]
@@ -491,12 +601,14 @@ namespace Netactica.Services
         #endregion [Acceso a datos Informacion Complementaria]
 
         #region [UsuariosEstados]
+
         /// <summary>
         /// Consulta el listado de estdos de los usuarios
         /// </summary>
         /// <returns>List UsuarioResponse</returns>
 
-        ResponseModel ConsultarEstadosUsuarios(); 
-        #endregion
+        ResponseModel ConsultarEstadosUsuarios();
+
+        #endregion [UsuariosEstados]
     }
 }

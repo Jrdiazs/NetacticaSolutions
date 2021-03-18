@@ -37,7 +37,5 @@ namespace Netactica.Models
 
         [NotMapped]
         public Terceros Tercero { get; set; }
-
-
     }
 }

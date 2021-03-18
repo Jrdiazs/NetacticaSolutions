@@ -1,12 +1,12 @@
 ﻿using Netactica.Data;
 using Netactica.Models;
+using Netactica.Models.Exceptions;
 using Netactica.Tools;
 using System;
-using System.Collections.Generic;
 
 namespace Netactica.Services
 {
-    public class ReservasServices : IReservasServices, IDisposable
+    public class ReservasServices : BaseServices, IReservasServices, IDisposable
     {
         private readonly IReservasData _data;
 
@@ -22,6 +22,10 @@ namespace Netactica.Services
             {
                 var reserva = _data.ConsultarReservaPorId(reservaId);
                 response.SuccesCall(reserva);
+            }
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
             }
             catch (Exception ex)
             {
@@ -40,6 +44,10 @@ namespace Netactica.Services
                 var reservas = _data.ConsultarReservas(filtro);
 
                 response.SuccesCall(reservas);
+            }
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
             }
             catch (Exception ex)
             {
@@ -62,13 +70,17 @@ namespace Netactica.Services
                 reserva.ReservaId = id;
                 reserva.FechaCreacion = DateTime.Now;
 
-                ValidarReserva(reserva);
+                Validator<Reservas, ReservasValidator>(reserva);
 
                 var newid = _data.InsertGetKey<Guid>(reserva);
 
                 reserva = _data.ConsultarReservaPorId(id);
 
                 response.SuccesCall(reserva, "Reserva guardada correctamente");
+            }
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
             }
             catch (Exception ex)
             {
@@ -103,7 +115,7 @@ namespace Netactica.Services
                 reservaOld.Modelo = reserva.Modelo;
                 reservaOld.PrecioPorHora = reserva.PrecioPorHora;
 
-                ValidarReserva(reservaOld);
+                Validator<Reservas, ReservasValidator>(reservaOld);
 
                 _data.Update(reservaOld);
 
@@ -111,34 +123,16 @@ namespace Netactica.Services
 
                 response.SuccesCall(reservaOld, "Reserva modificada correctamente");
             }
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
+            }
             catch (Exception ex)
             {
                 response.Fail(ex, $"Error en => {nameof(ModificarReserva)}");
                 Logger.ErrorFatal($"ReservasServices {nameof(ModificarReserva)}", ex);
             }
             return response;
-        }
-
-        private void ValidarReserva(Reservas reservas)
-        {
-            try
-            {
-                var validator = new ReservasValidator();
-                var results = validator.Validate(reservas);
-
-                if (results.IsValid)
-                    return;
-
-                var msg = new List<string>();
-                foreach (var error in results.Errors)
-                    msg.Add(error.ErrorMessage);
-
-                throw new Exception(string.Join(",", msg));
-            }
-            catch (Exception)
-            {
-                throw;
-            }
         }
 
         #region [Dispose]
@@ -177,7 +171,7 @@ namespace Netactica.Services
         #endregion [Dispose]
     }
 
-    public interface IReservasServices : IDisposable
+    public interface IReservasServices : IBaseServices, IDisposable
     {
         ResponseModel ConsultarReservaPorId(Guid reservaId);
 

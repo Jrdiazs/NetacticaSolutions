@@ -30,6 +30,21 @@ namespace Netactica.Models
             CodeValue = (int)EnumSuccesCode.Fail;
         }
 
+        public void NotFound(string msg = "")
+        {
+            Message = msg;
+            Success = false;
+            CodeValue = (int)EnumSuccesCode.NotFound;
+        }
+
+        public void NotFound(Exception ex, string msg = "")
+        {
+            Message = ex.Message;
+            InfoMessage = msg;
+            Success = false;
+            CodeValue = (int)EnumSuccesCode.NotFound;
+        }
+
         public void Fail(Exception ex, string msg = "")
         {
             Message = ex.Message;
@@ -51,6 +66,7 @@ namespace Netactica.Models
     {
         Succes = 1,
         Fail = -1,
-        FailBusiness = -2
+        FailBusiness = -2,
+        NotFound = -3
     }
 }

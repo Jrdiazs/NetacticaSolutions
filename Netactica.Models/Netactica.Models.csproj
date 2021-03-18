@@ -45,12 +45,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Exceptions\BusinessException.cs" />
+    <Compile Include="Exceptions\NotFoundException.cs" />
     <Compile Include="Lenguaje.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReservaFiltro.cs" />
     <Compile Include="Reservas.cs" />
     <Compile Include="ResponseModel.cs" />
     <Compile Include="Roles.cs" />
+    <Compile Include="RolesFiltro.cs" />
     <Compile Include="SessionUserModel.cs" />
     <Compile Include="Terceros.cs" />
     <Compile Include="TipoIdentificacion.cs" />

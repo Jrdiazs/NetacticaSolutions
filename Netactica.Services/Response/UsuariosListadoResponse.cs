@@ -2,7 +2,7 @@
 
 namespace Netactica.Services.Response
 {
-    public class UsuarioFiltroResponse
+    public class UsuariosListadoResponse
     {
         public Guid UsuarioId { get; set; }
 

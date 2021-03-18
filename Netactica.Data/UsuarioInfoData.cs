@@ -70,6 +70,10 @@ namespace Netactica.Data
                 usuario.UsuarioId = id;
                 return usuario;
             }
+            catch (BusinessException)
+            {
+                throw;
+            }
             catch (Exception)
             {
                 throw;
@@ -91,6 +95,9 @@ namespace Netactica.Data
 
                 var oldUser = GetFindById(usuario.UsuarioId, transaction);
 
+                if (oldUser == null)
+                    throw new NotFoundException($"No existe la información del usuario por id {usuario.UsuarioId}");
+
                 oldUser.Apellidos = usuario.Apellidos;
                 oldUser.CorreoAlternativo = usuario.CorreoAlternativo;
                 oldUser.Direccion = usuario.Direccion;
@@ -107,6 +114,14 @@ namespace Netactica.Data
                 usuario = ConsultarInfoPorId(usuario.UsuarioId, transaction);
 
                 return usuario;
+            }
+            catch (NotFoundException)
+            {
+                throw;
+            }
+            catch (BusinessException)
+            {
+                throw;
             }
             catch (Exception)
             {

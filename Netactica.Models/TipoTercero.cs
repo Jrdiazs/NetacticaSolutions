@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Netactica.Models
@@ -13,7 +12,5 @@ namespace Netactica.Models
 
         [Column("Descripcion")]
         public string Descripcion { get; set; }
-
-
     }
 }
