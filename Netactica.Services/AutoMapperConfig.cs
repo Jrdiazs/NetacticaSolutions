@@ -17,6 +17,7 @@ namespace Netactica.Services
                 MappingUsersSearchRequest(config);
                 MappingUserListResponse(config);
                 MappingRolesResponse(config);
+                MappingRoleFilterRequest(config);
             });
         }
 
@@ -181,6 +182,20 @@ namespace Netactica.Services
                 ForMember(x => x.TerceroNombre, o => o.MapFrom(s => s.Tercero != null ? s.Tercero.NombreComercial : string.Empty)).
                 ForMember(x => x.UsuarioCrea, o => o.MapFrom(s => s.UsuarioCrea)).
                 ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica));
+        }
+
+        public static void MappingRoleFilterRequest(IMapperConfigurationExpression config)
+        {
+            config.CreateMap<RolesFiltroRequest, RolesFiltro>().
+               ForMember(x => x.Estados, o => o.MapFrom(s => s.EstadoRol)).
+               ForMember(x => x.Id, o => o.Ignore()).
+               ForMember(x => x.Nombre, o => o.MapFrom(s => s.NombreRol)).
+               ForMember(x => x.Tercero, o => o.MapFrom(s => s.Tercero));
+
+            config.CreateMap<RolesFiltro, RolesFiltroRequest>().
+               ForMember(x => x.EstadoRol, o => o.MapFrom(s => s.Estados)).
+               ForMember(x => x.NombreRol, o => o.MapFrom(s => s.Nombre)).
+               ForMember(x => x.Tercero, o => o.MapFrom(s => s.Tercero));
         }
     }
 }

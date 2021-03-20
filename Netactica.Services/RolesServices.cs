@@ -2,6 +2,7 @@
 using Netactica.Data;
 using Netactica.Models;
 using Netactica.Models.Exceptions;
+using Netactica.Services.Request;
 using Netactica.Services.Response;
 using Netactica.Tools;
 using System;
@@ -28,6 +29,36 @@ namespace Netactica.Services
             _data = data ?? throw new ArgumentNullException(nameof(data));
         }
 
+
+        /// <summary>
+        /// Identifica si el id es un rol de super administrador
+        /// </summary>
+        /// <param name="rolId"></param>
+        /// <returns></returns>
+        public ResponseModel EsRolAdministrador(Guid rolId)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                var isSuperAdmon = _data.IsRolAdmon(rolId);
+                response.SuccesCall(isSuperAdmon, "Consulta cargada correctamente");
+            }
+            catch (NotFoundException ex)
+            {
+                response.NotFound(ex);
+            }
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorFatal($"{nameof(RolesServices)}  {nameof(EsRolAdministrador)}", ex);
+                response.Fail(ex, $"Error en => {nameof(EsRolAdministrador)}");
+            }
+            return response;
+        }
+
         /// <summary>
         /// Consulta un rol por id
         /// </summary>
@@ -39,10 +70,10 @@ namespace Netactica.Services
             try
             {
                 var rol = _data.ConsultarRolPorId(rolId);
-                if (rol == null)
+                if (rol != null)
                 {
                     var rolResponse = Mapper.Map<Roles, RolesResponse>(rol);
-                    response.SuccesCall(rolResponse, $"Rol con id {rol.RolId} creado correctamente");
+                    response.SuccesCall(rolResponse, $"Rol con id {rol.RolId} consultado correctamente");
                 }
                 else
                 {
@@ -64,6 +95,38 @@ namespace Netactica.Services
             }
             return response;
         }
+
+        /// <summary>
+        /// Consulta el listado de roles segun el filtro aplicado
+        /// </summary>
+        /// <param name="filtro">filtro</param>
+        /// <returns>List Roles</returns>
+        public ResponseModel ConsultarRoles(RolesFiltroRequest filtroRequest)
+        {
+            ResponseModel response = new ResponseModel();
+            try
+            {
+                var filtro = Mapper.Map<RolesFiltroRequest, RolesFiltro>(filtroRequest);
+                var query = _data.ConsultarRoles(filtro);
+                var queryResponse = Mapper.Map<List<Roles>, List<RolesResponse>>(query);
+                response.SuccesCall(queryResponse, $"Consulta cargada correctamente");
+            }
+            catch (NotFoundException ex)
+            {
+                response.NotFound(ex);
+            }
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorFatal($"{nameof(RolesServices)}  {nameof(ConsultarRoles)}", ex);
+                response.Fail(ex, $"Error en => {nameof(ConsultarRoles)}");
+            }
+            return response;
+        }
+
 
         /// <summary>
         /// Inserta un nuevo rol en base de datos
@@ -233,10 +296,27 @@ namespace Netactica.Services
         ResponseModel ConsultarRolesPorTercero(Guid terceroId);
 
         /// <summary>
+        /// Identifica si el rol es rol administrador
+        /// </summary>
+        /// <param name="rolId">rol id</param>
+        /// <returns>Roles</returns>
+        ResponseModel EsRolAdministrador(Guid rolId);
+
+        /// <summary>
+        /// Consulta el listado de roles segun el filtro aplicado
+        /// </summary>
+        /// <param name="filtro">filtro</param>
+        /// <returns>List Roles</returns>
+        ResponseModel ConsultarRoles(RolesFiltroRequest filtroRequest);
+
+        /// <summary>
         /// Consulta un rol por id
         /// </summary>
         /// <param name="rolId">rol id</param>
         /// <returns>Roles</returns>
         ResponseModel ConsultarRolPorId(Guid rolId);
+
+
+
     }
 }

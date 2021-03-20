@@ -57,6 +57,7 @@
     <Compile Include="Terceros.cs" />
     <Compile Include="TipoIdentificacion.cs" />
     <Compile Include="TipoTercero.cs" />
+    <Compile Include="ToolsResponseModel.cs" />
     <Compile Include="Usuario.cs" />
     <Compile Include="UsuarioInfo.cs" />
     <Compile Include="UsuariosEstado.cs" />

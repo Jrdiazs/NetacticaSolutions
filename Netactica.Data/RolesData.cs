@@ -111,11 +111,18 @@ namespace Netactica.Data
         /// <param name="roles">rol</param>
         /// <param name="transaction">transaccion sql</param>
         /// <returns>verifica si existe el rol por id</returns>
-        private bool ExisteRolPorNombre(Roles roles, IDbTransaction transaction = null)
+        private bool ExisteRolPorNombre(Roles roles, bool newRol = false, IDbTransaction transaction = null)
         {
             try
             {
                 int count = 0;
+
+                if (newRol) 
+                {
+                    count = Count("WHERE Descripcion = @nombre", new { nombre = roles.Descripcion }, transaction);
+                    return count >0 ;
+                }
+
                 if (ExisteRolPorId(roles, transaction))
                     count = Count("WHERE RolId <> @id AND Descripcion = @nombre", new { id = roles.RolId, nombre = roles.Descripcion }, transaction);
                 else
@@ -140,7 +147,7 @@ namespace Netactica.Data
             try
             {
                 roles.RolId = roles.RolId == Guid.Empty ? Guid.NewGuid() : roles.RolId;
-                if (ExisteRolPorNombre(roles, transaction))
+                if (ExisteRolPorNombre(roles, true, transaction))
                     throw new BusinessException($"Ya existe un rol con el nombre {roles.Descripcion}, verifique!");
 
                 roles.FechaCreacion = DateTime.Now;
@@ -152,6 +159,26 @@ namespace Netactica.Data
                 roles.RolId = id;
 
                 return roles;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
+        /// <summary>
+        /// Verifica si un rol es super administrador
+        /// </summary>
+        /// <param name="rolId">id del rol</param>
+        /// <param name="transaction">transaccion sql</param>
+        /// <returns>true si es super administrador, false si no</returns>
+        public bool IsRolAdmon(Guid rolId, IDbTransaction transaction = null)
+        {
+            try
+            {
+                bool isAdmon = (bool)DataBase.ExecuteScalar(sql: "SELECT DBO.IsAdmonRol(@rol) IsAdmon ", param: new { rol = rolId }, commandType: CommandType.Text);
+                return isAdmon;
             }
             catch (Exception)
             {
@@ -172,7 +199,7 @@ namespace Netactica.Data
                 if (!ExisteRolPorId(roles, transaction))
                     throw new BusinessException($"No existe el rol por id {roles.RolId}, verifique!");
 
-                if (ExisteRolPorNombre(roles, transaction))
+                if (ExisteRolPorNombre(roles,transaction:transaction))
                     throw new BusinessException($"Ya existe un rol con el nombre {roles.Descripcion}, verifique!");
 
                 roles.FechaModifica = DateTime.Now;
@@ -251,5 +278,14 @@ namespace Netactica.Data
         /// <param name="transaction">transaccion sql</param>
         /// <returns>Roles</returns>
         Roles ConsultarRolPorId(Guid rolId, IDbTransaction transaction = null);
+
+
+        /// <summary>
+        /// Verifica si un rol es super administrador
+        /// </summary>
+        /// <param name="rolId">id del rol</param>
+        /// <param name="transaction">transaccion sql</param>
+        /// <returns>true si es super administrador, false si no</returns>
+        bool IsRolAdmon(Guid rolId, IDbTransaction transaction = null);
     }
 }

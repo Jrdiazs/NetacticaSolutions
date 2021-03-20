@@ -30,8 +30,17 @@ namespace Netactica.Data
         {
             IDbConnection connection = null;
             usuario.UsuarioId = usuario.UsuarioId == Guid.Empty ? Guid.NewGuid() : usuario.UsuarioId;
+
+
             try
             {
+                if(ExisteUsuarioPorId(usuario))
+                    throw new BusinessException($"Ya existe un usuario con este id {usuario.UsuarioId}");
+
+                if (ExisteUsuarioPorNombre(usuario, true))
+                    throw new BusinessException($"Ya existe un usuario con este nombre {usuario.UsuarioNombre}");
+
+
                 using (connection = DataBase)
                 {
                     connection.Open();
@@ -179,11 +188,18 @@ namespace Netactica.Data
         /// </summary>
         /// <param name="usuario">usuario</param>
         /// <returns>true si existe, false si no existe</returns>
-        private bool ExisteUsuarioPorNombre(Usuario usuario, IDbTransaction transaction = null)
+        private bool ExisteUsuarioPorNombre(Usuario usuario, bool newUser = false, IDbTransaction transaction = null)
         {
             try
             {
                 int count = 0;
+
+                if (newUser) 
+                {
+                    count = Count("WHERE UsuarioNombre = @nombre", new { nombre = usuario.UsuarioNombre }, transaction: transaction);
+                    return count > 0;
+                }
+
                 if (ExisteUsuarioPorId(usuario, transaction))
                     count = Count("WHERE UsuarioNombre = @nombre AND UsuarioId <> @id", new { id = usuario.UsuarioId, nombre = usuario.UsuarioNombre }, transaction: transaction);
                 else
