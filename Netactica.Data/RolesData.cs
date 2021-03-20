@@ -31,7 +31,9 @@ namespace Netactica.Data
             try
             {
                 var query = ConsultarRoles(new RolesFiltro() { Id = rolId }, transaction);
-                return query.FirstOrDefault();
+                var rol = query.FirstOrDefault();
+
+                return rol;
             }
             catch (Exception)
             {
@@ -49,13 +51,15 @@ namespace Netactica.Data
         {
             try
             {
-                var query = DataBase.Query<Roles>(sql: "NetacticaDB_SP_RolesConsultar", param: new
+                var query = DataBase.Query<Roles, Terceros, Roles>(sql: "NetacticaDB_SP_RolesConsultar", param: new
                 {
                     RolId = filtro.Id,
                     Descripcion = filtro.Nombre,
                     Estado = filtro.Estados,
                     TerceroId = filtro.Tercero
                 },
+                map: (r, t) => { r.Tercero = t; return r; },
+                splitOn: "split",
                     transaction: transaction,
                     commandType: CommandType.StoredProcedure).ToList();
 
@@ -117,10 +121,10 @@ namespace Netactica.Data
             {
                 int count = 0;
 
-                if (newRol) 
+                if (newRol)
                 {
                     count = Count("WHERE Descripcion = @nombre", new { nombre = roles.Descripcion }, transaction);
-                    return count >0 ;
+                    return count > 0;
                 }
 
                 if (ExisteRolPorId(roles, transaction))
@@ -150,6 +154,11 @@ namespace Netactica.Data
                 if (ExisteRolPorNombre(roles, true, transaction))
                     throw new BusinessException($"Ya existe un rol con el nombre {roles.Descripcion}, verifique!");
 
+                bool isRolAdmin = IsRolAdmon(roles.RolIdCreate);
+
+                if (!isRolAdmin && roles.EsSuperAdmon)
+                    throw new BusinessException($"Solo el rol super administrador puede crear roles con super administrador");
+
                 roles.FechaCreacion = DateTime.Now;
                 roles.FechaModifica = null;
                 roles.UsuarioModifica = null;
@@ -166,7 +175,6 @@ namespace Netactica.Data
             }
         }
 
-
         /// <summary>
         /// Verifica si un rol es super administrador
         /// </summary>
@@ -177,7 +185,7 @@ namespace Netactica.Data
         {
             try
             {
-                bool isAdmon = (bool)DataBase.ExecuteScalar(sql: "SELECT DBO.IsAdmonRol(@rol) IsAdmon ", param: new { rol = rolId }, commandType: CommandType.Text);
+                bool isAdmon = DataCommon.IsRolAdmon(rolId, transaction);
                 return isAdmon;
             }
             catch (Exception)
@@ -199,8 +207,13 @@ namespace Netactica.Data
                 if (!ExisteRolPorId(roles, transaction))
                     throw new BusinessException($"No existe el rol por id {roles.RolId}, verifique!");
 
-                if (ExisteRolPorNombre(roles,transaction:transaction))
+                if (ExisteRolPorNombre(roles, transaction: transaction))
                     throw new BusinessException($"Ya existe un rol con el nombre {roles.Descripcion}, verifique!");
+
+                bool isRolAdmin = IsRolAdmon(roles.RolIdCreate);
+
+                if (!isRolAdmin && roles.EsSuperAdmon)
+                    throw new BusinessException($"Solo el rol super administrador puede crear roles con super administrador");
 
                 roles.FechaModifica = DateTime.Now;
 
@@ -278,7 +291,6 @@ namespace Netactica.Data
         /// <param name="transaction">transaccion sql</param>
         /// <returns>Roles</returns>
         Roles ConsultarRolPorId(Guid rolId, IDbTransaction transaction = null);
-
 
         /// <summary>
         /// Verifica si un rol es super administrador

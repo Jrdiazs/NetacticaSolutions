@@ -2,15 +2,15 @@
 
 namespace Netactica.Services.Response
 {
-    public class RolesResponse
+    public class UsuariosRolesResponse
     {
         public Guid Id { get; set; }
 
-        public string Nombre { get; set; }
+        public Guid Usuario { get; set; }
 
-        public Guid? Tercero { get; set; }
+        public Guid Rol { get; set; }
 
-        public bool EsSuperAdmon { get; set; }
+        public Guid Tercero { get; set; }
 
         public bool Estado { get; set; }
 
@@ -22,10 +22,8 @@ namespace Netactica.Services.Response
 
         public Guid? UsuarioModifica { get; set; }
 
-        public string TerceroNombre { get; set; }
+        public string UsuarioNombreCompleto { get; set; }
 
-        public string TerceroDocumento { get; set; }
-
-        public Guid RolIdCreateRol { get; set; }
+        public string RolNombre { get; set; }
     }
 }

@@ -20,11 +20,7 @@ namespace Netactica.Data
         /// </summary>
         public Repository() : base()
         {
-        }
-
-        public Repository(IDbConnection connection)
-        {
-            DataBase = connection;
+            DataCommon = new DataCommon();
         }
 
         #endregion [Constructor]
@@ -358,12 +354,32 @@ namespace Netactica.Data
         }
 
         #endregion [Metodos]
+
+        #region [Acceso a propiedades]
+
+        /// <summary>
+        /// Obtiene el acceso a datos de consultas comunes
+        /// </summary>
+        public IDataCommon DataCommon { get; }
+
+        #endregion [Acceso a propiedades]
     }
 
     #region [IConnectRepository]
 
     public interface IRepository<TModel> : IDataConnections, IDisposable
     {
+        /// <summary>
+        /// Obtiene el acceso a datos de consultas comunes
+        /// </summary>
+        IDataCommon DataCommon { get; }
+
+        /// <summary>
+        /// Elimina un objeto por id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
         int Delete(object id, IDbTransaction transaction = null);
 
         /// <summary>

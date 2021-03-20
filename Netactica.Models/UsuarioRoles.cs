@@ -4,21 +4,21 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Netactica.Models
 {
-    [Table("Roles")]
-    public class Roles
+    [Table("UsuarioRoles")]
+    public class UsuarioRoles
     {
         [Key]
+        [Column("UsuarioRolId")]
+        public Guid UsuarioRolId { get; set; }
+
+        [Column("UsuarioId")]
+        public Guid UsuarioId { get; set; }
+
         [Column("RolId")]
         public Guid RolId { get; set; }
 
-        [Column("Descripcion")]
-        public string Descripcion { get; set; }
-
         [Column("TerceroId")]
-        public Guid? TerceroId { get; set; }
-
-        [Column("EsSuperAdmon")]
-        public bool EsSuperAdmon { get; set; }
+        public Guid TerceroId { get; set; }
 
         [Column("Estado")]
         public bool Estado { get; set; }
@@ -36,9 +36,12 @@ namespace Netactica.Models
         public Guid? UsuarioModifica { get; set; }
 
         [NotMapped]
-        public Terceros Tercero { get; set; }
+        public Usuario Usuario { get; set; }
 
         [NotMapped]
-        public Guid RolIdCreate { get; set; }
+        public Roles Roles { get; set; }
+
+        [NotMapped]
+        public Terceros Terero { get; set; }
     }
 }

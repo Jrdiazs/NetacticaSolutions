@@ -60,8 +60,10 @@
     <Compile Include="ToolsResponseModel.cs" />
     <Compile Include="Usuario.cs" />
     <Compile Include="UsuarioInfo.cs" />
+    <Compile Include="UsuarioRoles.cs" />
     <Compile Include="UsuariosEstado.cs" />
     <Compile Include="UsuariosListado.cs" />
+    <Compile Include="UsuariosRolesFiltro.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

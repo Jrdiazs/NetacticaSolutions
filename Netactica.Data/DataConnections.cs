@@ -2,6 +2,8 @@
 using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Reflection;
 
 namespace Netactica.Data
 {
@@ -13,7 +15,7 @@ namespace Netactica.Data
         /// <summary>
         /// Obtiene la conexion actual de base de datos
         /// </summary>
-        public IDbConnection DataBase { get; set; }
+        public IDbConnection DataBase { get; }
 
         public DataConnections()
         {
@@ -55,6 +57,44 @@ namespace Netactica.Data
             {
                 if (DataBase != null && DataBase.State != ConnectionState.Open)
                     DataBase.Open();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Obtiene el valor del id del objeto
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public TValue GetIdValue<T, TValue>(T model)
+        {
+            try
+            {
+                PropertyInfo[] props = typeof(T).GetProperties();
+                PropertyInfo prop = null;
+                foreach (PropertyInfo p in props)
+                {
+                    var customKeyAttribute = p.GetCustomAttributes(false).Where(x => x.GetType().FullName.ToUpper().Contains("KEYATTRIBUTE")).Any();
+
+                    if (customKeyAttribute)
+                    {
+                        prop = p;
+                        break;
+                    }
+                }
+
+                TValue value = default;
+                if (prop != null)
+                {
+                    var obj = prop.GetValue(model);
+                    if (obj is TValue)
+                        value = (TValue)obj;
+                }
+                return value;
             }
             catch (Exception)
             {
@@ -113,11 +153,19 @@ namespace Netactica.Data
         /// <summary>
         /// Obtiene la conexion actual de base de datos
         /// </summary>
-        IDbConnection DataBase { get; set; }
+        IDbConnection DataBase { get; }
 
         /// <summary>
         /// Cierra la conexion actual
         /// </summary>
         void Close();
+
+        /// <summary>
+        /// Obtiene el valor del id del objeto
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        TValue GetIdValue<T, TValue>(T model);
     }
 }

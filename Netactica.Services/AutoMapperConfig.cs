@@ -160,6 +160,7 @@ namespace Netactica.Services
         {
             config.CreateMap<RolesResponse, Roles>().
                ForMember(x => x.Descripcion, o => o.MapFrom(s => s.Nombre)).
+               ForMember(x => x.RolIdCreate, o => o.MapFrom(s => s.RolIdCreateRol)).
                ForMember(x => x.EsSuperAdmon, o => o.MapFrom(s => s.EsSuperAdmon)).
                ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
                ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
@@ -173,6 +174,7 @@ namespace Netactica.Services
 
             config.CreateMap<Roles, RolesResponse>().
                 ForMember(x => x.Nombre, o => o.MapFrom(s => s.Descripcion)).
+                ForMember(x => x.RolIdCreateRol, o => o.MapFrom(s => s.RolIdCreate)).
                 ForMember(x => x.EsSuperAdmon, o => o.MapFrom(s => s.EsSuperAdmon)).
                 ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
                 ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
@@ -180,6 +182,7 @@ namespace Netactica.Services
                 ForMember(x => x.Id, o => o.MapFrom(s => s.RolId)).
                 ForMember(x => x.Tercero, o => o.MapFrom(s => s.TerceroId)).
                 ForMember(x => x.TerceroNombre, o => o.MapFrom(s => s.Tercero != null ? s.Tercero.NombreComercial : string.Empty)).
+                ForMember(x => x.TerceroDocumento, o => o.MapFrom(s => s.Tercero != null ? s.Tercero.Documento : string.Empty)).
                 ForMember(x => x.UsuarioCrea, o => o.MapFrom(s => s.UsuarioCrea)).
                 ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica));
         }

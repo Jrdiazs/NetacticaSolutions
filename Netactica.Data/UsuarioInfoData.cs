@@ -20,14 +20,6 @@ namespace Netactica.Data
         }
 
         /// <summary>
-        /// Constructor de acceso a datos de la tabla UsuarioInfo
-        /// </summary>
-        /// <param name="connection"></param>
-        public UsuarioInfoData(IDbConnection connection) : base(connection)
-        {
-        }
-
-        /// <summary>
         /// Obtiene la informacion complementaria del usuario por id de usuario
         /// </summary>
         /// <param name="usuarioId">usuario id</param>

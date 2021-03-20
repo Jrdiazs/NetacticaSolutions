@@ -4,7 +4,7 @@ namespace Netactica.Models.Tools
 {
     public static class ToolsResponseModel
     {
-        public static T GetModel<T>(this ResponseModel response) 
+        public static T GetModel<T>(this ResponseModel response)
         {
             try
             {
@@ -20,13 +20,10 @@ namespace Netactica.Models.Tools
                         return default(T);
 
                     case (int)EnumSuccesCode.Succes:
-                        if(response.Data is T)
+                        if (response.Data is T)
                             return (T)response.Data;
                         else
                             return default(T);
-
-
-
                 }
 
                 return default(T);

@@ -31,15 +31,13 @@ namespace Netactica.Data
             IDbConnection connection = null;
             usuario.UsuarioId = usuario.UsuarioId == Guid.Empty ? Guid.NewGuid() : usuario.UsuarioId;
 
-
             try
             {
-                if(ExisteUsuarioPorId(usuario))
+                if (ExisteUsuarioPorId(usuario))
                     throw new BusinessException($"Ya existe un usuario con este id {usuario.UsuarioId}");
 
                 if (ExisteUsuarioPorNombre(usuario, true))
                     throw new BusinessException($"Ya existe un usuario con este nombre {usuario.UsuarioNombre}");
-
 
                 using (connection = DataBase)
                 {
@@ -194,7 +192,7 @@ namespace Netactica.Data
             {
                 int count = 0;
 
-                if (newUser) 
+                if (newUser)
                 {
                     count = Count("WHERE UsuarioNombre = @nombre", new { nombre = usuario.UsuarioNombre }, transaction: transaction);
                     return count > 0;
@@ -302,7 +300,7 @@ namespace Netactica.Data
         {
             try
             {
-                bool isAdmon = (bool)DataBase.ExecuteScalar(sql: "SELECT DBO.IsAdmonRol(@rol) IsAdmon ", param: new { rol = rolId }, commandType: CommandType.Text);
+                bool isAdmon = DataCommon.IsRolAdmon(rolId, transaction);
                 return isAdmon;
             }
             catch (Exception)

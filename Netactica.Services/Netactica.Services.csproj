@@ -70,6 +70,7 @@
     <Compile Include="Response\UsuarioInfoResponse.cs" />
     <Compile Include="Response\UsuarioResponse.cs" />
     <Compile Include="Response\DropDownItem.cs" />
+    <Compile Include="Response\UsuariosRolesResponse.cs" />
     <Compile Include="RolesServices.cs" />
     <Compile Include="UsuarioServices.cs" />
     <Compile Include="ValidationModel.cs" />

@@ -29,7 +29,6 @@ namespace Netactica.Services
             _data = data ?? throw new ArgumentNullException(nameof(data));
         }
 
-
         /// <summary>
         /// Identifica si el id es un rol de super administrador
         /// </summary>
@@ -126,7 +125,6 @@ namespace Netactica.Services
             }
             return response;
         }
-
 
         /// <summary>
         /// Inserta un nuevo rol en base de datos
@@ -228,7 +226,6 @@ namespace Netactica.Services
             return response;
         }
 
-
         #region [Dispose]
 
         private bool disposedValue;
@@ -287,7 +284,6 @@ namespace Netactica.Services
         /// <returns>Roles</returns>
         ResponseModel ModificarRol(RolesResponse request);
 
-
         /// <summary>
         /// Consulta los roles por Tercero Id
         /// </summary>
@@ -315,8 +311,5 @@ namespace Netactica.Services
         /// <param name="rolId">rol id</param>
         /// <returns>Roles</returns>
         ResponseModel ConsultarRolPorId(Guid rolId);
-
-
-
     }
 }

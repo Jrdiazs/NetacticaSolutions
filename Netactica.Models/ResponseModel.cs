@@ -62,8 +62,6 @@ namespace Netactica.Models
         }
     }
 
-   
-
     public enum EnumSuccesCode
     {
         Succes = 1,
