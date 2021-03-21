@@ -30,7 +30,7 @@ namespace Netactica.Data
         {
             try
             {
-                var query = ConsultarRolesUsuarios(new UsuariosRolesFiltro() { Id = rolId }, transaction);
+                var query = ConsultarUsuarioRol(new UsuariosRolesFiltro() { Id = rolId }, transaction);
                 return query.FirstOrDefault();
             }
             catch (Exception)
@@ -45,11 +45,29 @@ namespace Netactica.Data
         /// <param name="rolId">rol id</param>
         /// <param name="transaction">transaccion sql</param>
         /// <returns></returns>
-        public List<UsuarioRoles> ConsultarRolesPorRol(Guid rolId, IDbTransaction transaction = null)
+        public List<UsuarioRoles> ConsultarUsuarioRolPorRol(Guid rolId, IDbTransaction transaction = null)
         {
             try
             {
-                return ConsultarRolesUsuarios(new UsuariosRolesFiltro() { Rol = rolId }, transaction);
+                return ConsultarUsuarioRol(new UsuariosRolesFiltro() { Rol = rolId }, transaction);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Consulta el listado de usuarios roles por id de usuario
+        /// </summary>
+        /// <param name="usuarioId">id de usuario</param>
+        /// <param name="transaction">transaccion sql</param>
+        /// <returns></returns>
+        public List<UsuarioRoles> ConsultarUsuarioRolPorUsuario(Guid usuarioId, IDbTransaction transaction = null)
+        {
+            try
+            {
+                return ConsultarUsuarioRol(new UsuariosRolesFiltro() { Usuario = usuarioId }, transaction);
             }
             catch (Exception)
             {
@@ -63,11 +81,11 @@ namespace Netactica.Data
         /// <param name="terceroId">tercero id</param>
         /// <param name="transaction">transaccion sql</param>
         /// <returns></returns>
-        public List<UsuarioRoles> ConsultarRolesPorTercero(Guid terceroId, IDbTransaction transaction = null)
+        public List<UsuarioRoles> ConsultarUsuarioRolPorTercero(Guid terceroId, IDbTransaction transaction = null)
         {
             try
             {
-                return ConsultarRolesUsuarios(new UsuariosRolesFiltro() { Tercero = terceroId }, transaction);
+                return ConsultarUsuarioRol(new UsuariosRolesFiltro() { Tercero = terceroId }, transaction);
             }
             catch (Exception)
             {
@@ -81,7 +99,7 @@ namespace Netactica.Data
         /// <param name="filtro">filtro de usuarios roles</param>
         /// <param name="transaction">transaccion sql</param>
         /// <returns></returns>
-        public List<UsuarioRoles> ConsultarRolesUsuarios(UsuariosRolesFiltro filtro, IDbTransaction transaction = null)
+        public List<UsuarioRoles> ConsultarUsuarioRol(UsuariosRolesFiltro filtro, IDbTransaction transaction = null)
         {
             try
             {
@@ -93,7 +111,7 @@ namespace Netactica.Data
                 param.Add("@Tercero", filtro.Tercero, dbType: DbType.Guid);
 
                 var query = DataBase.Query<UsuarioRoles, Usuario, Terceros, Roles, UsuarioRoles>(sql: "NetacticaDB_SP_UsuarioRolesConsultar",
-                    param: param, map: (ur, u, t, r) => { ur.Usuario = u; ur.Terero = t; ur.Roles = r; return ur; },
+                    param: param, map: (ur, u, t, r) => { ur.Usuario = u; ur.Tercero = t; ur.Roles = r; return ur; },
                     splitOn: "split", transaction: transaction, commandType: CommandType.StoredProcedure).ToList();
 
                 return query ?? new List<UsuarioRoles>();
@@ -258,7 +276,7 @@ namespace Netactica.Data
         /// <param name="rolId">rol id</param>
         /// <param name="transaction">transaccion sql</param>
         /// <returns></returns>
-        List<UsuarioRoles> ConsultarRolesPorRol(Guid rolId, IDbTransaction transaction = null);
+        List<UsuarioRoles> ConsultarUsuarioRolPorRol(Guid rolId, IDbTransaction transaction = null);
 
         /// <summary>
         /// Consulta los roles de los usuario por tercero id
@@ -266,7 +284,7 @@ namespace Netactica.Data
         /// <param name="terceroId">tercero id</param>
         /// <param name="transaction">transaccion sql</param>
         /// <returns></returns>
-        List<UsuarioRoles> ConsultarRolesPorTercero(Guid terceroId, IDbTransaction transaction = null);
+        List<UsuarioRoles> ConsultarUsuarioRolPorTercero(Guid terceroId, IDbTransaction transaction = null);
 
         /// <summary>
         /// Consulta toda la lista de usuarios segun el filtro
@@ -274,7 +292,7 @@ namespace Netactica.Data
         /// <param name="filtro">filtro de usuarios roles</param>
         /// <param name="transaction">transaccion sql</param>
         /// <returns></returns>
-        List<UsuarioRoles> ConsultarRolesUsuarios(UsuariosRolesFiltro filtro, IDbTransaction transaction = null);
+        List<UsuarioRoles> ConsultarUsuarioRol(UsuariosRolesFiltro filtro, IDbTransaction transaction = null);
 
         /// <summary>
         /// Consulta el usuario rol por id
@@ -307,5 +325,13 @@ namespace Netactica.Data
         /// <param name="transaction">transaccion sql</param>
         /// <returns>UsuarioRoles</returns>
         UsuarioRoles ModificarUsuarioRol(UsuarioRoles usuario, IDbTransaction transaction = null);
+
+        /// <summary>
+        /// Consulta el listado de usuarios roles por id de usuario
+        /// </summary>
+        /// <param name="usuarioId">id de usuario</param>
+        /// <param name="transaction">transaccion sql</param>
+        /// <returns></returns>
+        List<UsuarioRoles> ConsultarUsuarioRolPorUsuario(Guid usuarioId, IDbTransaction transaction = null);
     }
 }

@@ -31,5 +31,7 @@ namespace Netactica.Services.Response
         public Guid? UsuarioModifica { get; set; }
 
         public string TipoIdentificacion { get; set; }
+
+        public string NombreCompleto { get; set; }
     }
 }

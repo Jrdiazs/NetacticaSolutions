@@ -138,6 +138,17 @@ namespace Netactica.Services
         }
     }
 
+    public class UsuariosRolesValidator : ValidatorModel<UsuarioRoles>
+    {
+        public UsuariosRolesValidator()
+        {
+            RuleFor(x => x.UsuarioRolId).NotEmpty().WithMessage("El id es requerido");
+            RuleFor(x => x.RolId).NotEmpty().WithMessage("El id es requerido");
+            RuleFor(x => x.TerceroId).NotEmpty().WithMessage("El Tercero id es requerido");
+            RuleFor(x => x.UsuarioId).NotEmpty().WithMessage("El Usuario id es requerido");
+        }
+    }
+
     /// <summary>
     /// Plantilla para crear validadores de modelos
     /// </summary>

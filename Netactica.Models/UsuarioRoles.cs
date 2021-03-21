@@ -42,6 +42,6 @@ namespace Netactica.Models
         public Roles Roles { get; set; }
 
         [NotMapped]
-        public Terceros Terero { get; set; }
+        public Terceros Tercero { get; set; }
     }
 }

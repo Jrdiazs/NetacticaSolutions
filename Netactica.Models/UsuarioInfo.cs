@@ -48,6 +48,9 @@ namespace Netactica.Models
         public Guid? UsuarioModifica { get; set; }
 
         [NotMapped]
+        public string NombreCompleto { get; set; }
+
+        [NotMapped]
         public TipoIdentificacion TipoIdentificacion { get; set; }
 
         [NotMapped]

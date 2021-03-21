@@ -52,5 +52,11 @@ namespace Netactica.Models
 
         [NotMapped]
         public Lenguaje Lenguaje { get; set; }
+
+        /// <summary>
+        /// Nombre completo del usuario sacado de la tabla UsuarioInfo
+        /// </summary>
+        [NotMapped]
+        public string NombreCompleto { get; set; }
     }
 }

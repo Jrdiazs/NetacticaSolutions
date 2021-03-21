@@ -18,6 +18,8 @@ namespace Netactica.Services
                 MappingUserListResponse(config);
                 MappingRolesResponse(config);
                 MappingRoleFilterRequest(config);
+                MappingUsuariosRolesResponse(config);
+                MappingRoleUsuariosFilterRequest(config);
             });
         }
 
@@ -25,6 +27,7 @@ namespace Netactica.Services
         {
             config.CreateMap<Usuario, UsuarioResponse>().
                 ForMember(x => x.Correo, o => o.MapFrom(s => s.UsuarioCorreo)).
+                ForMember(x => x.NombreCompleto, o => o.MapFrom(s => s.NombreCompleto)).
                 ForMember(x => x.EstadoDescripcion, o => o.MapFrom(s => s.UsuariosEstado != null ? s.UsuariosEstado.DescripcionEstado : string.Empty)).
                 ForMember(x => x.EstadoId, o => o.MapFrom(s => s.UsuarioEstadoId)).
                 ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
@@ -41,6 +44,7 @@ namespace Netactica.Services
                 ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica));
 
             config.CreateMap<UsuarioResponse, Usuario>().
+                ForMember(x => x.NombreCompleto, o => o.MapFrom(s => s.NombreCompleto)).
                 ForMember(x => x.Lenguaje, o => o.Ignore()).
                 ForMember(x => x.UsuariosEstado, o => o.Ignore()).
                 ForMember(x => x.UsuarioCorreo, o => o.MapFrom(s => s.Correo)).
@@ -61,6 +65,7 @@ namespace Netactica.Services
         {
             config.CreateMap<UsuarioInfo, UsuarioInfoResponse>().
                ForMember(x => x.Apellidos, o => o.MapFrom(s => s.Apellidos)).
+               ForMember(x => x.NombreCompleto, o => o.MapFrom(s => s.NombreCompleto)).
                ForMember(x => x.CorreoAlternativo, o => o.MapFrom(s => s.CorreoAlternativo)).
                ForMember(x => x.Direccion, o => o.MapFrom(s => s.Direccion)).
                ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
@@ -77,6 +82,7 @@ namespace Netactica.Services
 
             config.CreateMap<UsuarioInfoResponse, UsuarioInfo>().
                ForMember(x => x.Apellidos, o => o.MapFrom(s => s.Apellidos)).
+               ForMember(x => x.NombreCompleto, o => o.MapFrom(s => s.NombreCompleto)).
                ForMember(x => x.CorreoAlternativo, o => o.MapFrom(s => s.CorreoAlternativo)).
                ForMember(x => x.Direccion, o => o.MapFrom(s => s.Direccion)).
                ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
@@ -198,6 +204,55 @@ namespace Netactica.Services
             config.CreateMap<RolesFiltro, RolesFiltroRequest>().
                ForMember(x => x.EstadoRol, o => o.MapFrom(s => s.Estados)).
                ForMember(x => x.NombreRol, o => o.MapFrom(s => s.Nombre)).
+               ForMember(x => x.Tercero, o => o.MapFrom(s => s.Tercero));
+        }
+
+        public static void MappingUsuariosRolesResponse(IMapperConfigurationExpression config)
+        {
+            config.CreateMap<UsuarioRolesResponse, UsuarioRoles>().
+               ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
+               ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
+               ForMember(x => x.FechaModifica, o => o.MapFrom(s => s.FechaModifica)).
+               ForMember(x => x.Roles, o => o.Ignore()).
+               ForMember(x => x.RolId, o => o.MapFrom(s => s.Rol)).
+               ForMember(x => x.TerceroId, o => o.MapFrom(s => s.Tercero)).
+               ForMember(x => x.Tercero, o => o.Ignore()).
+               ForMember(x => x.Usuario, o => o.Ignore()).
+               ForMember(x => x.UsuarioCrea, o => o.MapFrom(s => s.UsuarioCrea)).
+               ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica)).
+               ForMember(x => x.UsuarioId, o => o.MapFrom(s => s.Usuario)).
+               ForMember(x => x.UsuarioRolId, o => o.MapFrom(s => s.Id))
+               ;
+
+            config.CreateMap<UsuarioRoles, UsuarioRolesResponse>().
+               ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
+               ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
+               ForMember(x => x.FechaModifica, o => o.MapFrom(s => s.FechaModifica)).
+               ForMember(x => x.Rol, o => o.MapFrom(s => s.RolId)).
+               ForMember(x => x.UsuarioNombreCompleto, o => o.MapFrom(s => s.Usuario != null ? s.Usuario.NombreCompleto : string.Empty)).
+               ForMember(x => x.RolNombre, o => o.MapFrom(s => s.Roles != null ? s.Roles.Descripcion : string.Empty)).
+               ForMember(x => x.Tercero, o => o.MapFrom(s => s.TerceroId)).
+               ForMember(x => x.TerceroDocumento, o => o.MapFrom(s => s.Tercero != null ? s.Tercero.Documento : string.Empty)).
+               ForMember(x => x.TerceroNombre, o => o.MapFrom(s => s.Tercero != null ? s.Tercero.NombreComercial : string.Empty)).
+               ForMember(x => x.UsuarioCrea, o => o.MapFrom(s => s.UsuarioCrea)).
+               ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica)).
+               ForMember(x => x.Usuario, o => o.MapFrom(s => s.UsuarioId)).
+               ForMember(x => x.Id, o => o.MapFrom(s => s.UsuarioRolId))
+               ;
+        }
+
+        public static void MappingRoleUsuariosFilterRequest(IMapperConfigurationExpression config)
+        {
+            config.CreateMap<UsuariosRolesFiltroRequest, UsuariosRolesFiltro>().
+               ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
+               ForMember(x => x.Rol, o => o.MapFrom(s => s.Rol)).
+               ForMember(x => x.Usuario, o => o.MapFrom(s => s.Usuario)).
+               ForMember(x => x.Tercero, o => o.MapFrom(s => s.Tercero));
+
+            config.CreateMap<UsuariosRolesFiltro, UsuariosRolesFiltroRequest>().
+               ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
+               ForMember(x => x.Rol, o => o.MapFrom(s => s.Rol)).
+               ForMember(x => x.Usuario, o => o.MapFrom(s => s.Usuario)).
                ForMember(x => x.Tercero, o => o.MapFrom(s => s.Tercero));
         }
     }

@@ -2,7 +2,7 @@
 
 namespace Netactica.Services.Response
 {
-    public class UsuariosRolesResponse
+    public class UsuarioRolesResponse
     {
         public Guid Id { get; set; }
 
@@ -25,5 +25,9 @@ namespace Netactica.Services.Response
         public string UsuarioNombreCompleto { get; set; }
 
         public string RolNombre { get; set; }
+
+        public string TerceroNombre { get; set; }
+
+        public string TerceroDocumento { get; set; }
     }
 }
