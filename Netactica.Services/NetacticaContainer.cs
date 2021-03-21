@@ -18,6 +18,9 @@ namespace Netactica.Services
             Bind<IUsuarioInfoData>().To<UsuarioInfoData>();
             Bind<IUsuariosData>().To<UsuariosData>();
             Bind<IUsuarioRolesData>().To<UsuarioRolesData>();
+            Bind<IParametrosData>().To<ParametrosData>();
+            Bind<ILogAppData>().To<LogAppData>();
+            Bind<ITraduccionControlesData>().To<TraduccionControlesData>();
 
             //Servicios
             Bind<IReservasServices>().To<ReservasServices>();
