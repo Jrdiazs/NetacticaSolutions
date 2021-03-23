@@ -21,11 +21,14 @@ namespace Netactica.Services
             Bind<IParametrosData>().To<ParametrosData>();
             Bind<ILogAppData>().To<LogAppData>();
             Bind<ITraduccionControlesData>().To<TraduccionControlesData>();
+            Bind<IMenuData>().To<MenuData>();
+            Bind<IMenuRolesData>().To<MenuRolesData>();
 
             //Servicios
             Bind<IReservasServices>().To<ReservasServices>();
             Bind<IUsuarioServices>().To<UsuarioServices>();
             Bind<IRolesServices>().To<RolesServices>();
+            Bind<IMenuServices>().To<MenuServices>();
         }
     }
 }

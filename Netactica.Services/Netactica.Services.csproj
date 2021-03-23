@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="AutoMapperConfig.cs" />
     <Compile Include="BaseServices.cs" />
+    <Compile Include="MenuServices.cs" />
     <Compile Include="NetacticaContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request\RolesFiltroRequest.cs" />

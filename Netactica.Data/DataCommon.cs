@@ -60,30 +60,55 @@ namespace Netactica.Data
 
                 if (parameter != null)
                 {
-                    if (typeof(T) == typeof(int) || typeof(T) == typeof(int?))
+                    switch (Type.GetTypeCode(typeof(T))) 
                     {
-                        value = (T)Convert.ChangeType(parameter.ValorEntero, typeof(T));
+                        case TypeCode.Int32:
+                            value = (T)Convert.ChangeType(parameter.ValorEntero, typeof(T));
+                            break;
+                        case TypeCode.Int64:
+                            value = (T)Convert.ChangeType(parameter.ValorBingInt, typeof(T));
+                            break;
+                        case TypeCode.String:
+                            value = (T)Convert.ChangeType(parameter.ValorSrtring, typeof(T));
+                            break;
+                        case TypeCode.Boolean:
+                            value = (T)Convert.ChangeType(parameter.ValorBoleano, typeof(T));
+                            break;
+                        case TypeCode.DateTime:
+                            value = (T)Convert.ChangeType(parameter.ValorDateTime, typeof(T));
+                            break;
+
+                        default:
+
+                            if (typeof(T) == typeof(int?))
+                            {
+                                value = (T)Convert.ChangeType(parameter.ValorEntero, typeof(T));
+                            }
+                            else
+                            if (typeof(T) == typeof(long?))
+                            {
+                                value = (T)Convert.ChangeType(parameter.ValorBingInt, typeof(T));
+                            }
+                            else
+                            if (typeof(T) == typeof(DateTime?))
+                            {
+                                value = (T)Convert.ChangeType(parameter.ValorDateTime, typeof(T));
+                            }
+                            else
+                            if (typeof(T) == typeof(bool?))
+                            {
+                                value = (T)Convert.ChangeType(parameter.ValorBoleano, typeof(T));
+                            }
+                            else
+                            if (typeof(T) == typeof(Guid) || typeof(T) == typeof(Guid?))
+                            {
+                                value = (T)Convert.ChangeType(parameter.ValorGuid, typeof(T));
+                            }
+
+                            break;
+                        
                     }
-                    if (typeof(T) == typeof(string))
-                    {
-                        value = (T)Convert.ChangeType(parameter.ValorSrtring, typeof(T));
-                    }
-                    if (typeof(T) == typeof(long) || typeof(T) == typeof(long?))
-                    {
-                        value = (T)Convert.ChangeType(parameter.ValorBingInt, typeof(T));
-                    }
-                    if (typeof(T) == typeof(DateTime) || typeof(T) == typeof(DateTime?))
-                    {
-                        value = (T)Convert.ChangeType(parameter.ValorDateTime, typeof(T));
-                    }
-                    if (typeof(T) == typeof(bool) || typeof(T) == typeof(bool?))
-                    {
-                        value = (T)Convert.ChangeType(parameter.ValorBoleano, typeof(T));
-                    }
-                    if (typeof(T) == typeof(Guid) || typeof(T) == typeof(Guid?))
-                    {
-                        value = (T)Convert.ChangeType(parameter.ValorGuid, typeof(T));
-                    }
+                   
                 }
 
                 return value;

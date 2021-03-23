@@ -54,6 +54,8 @@
     <Compile Include="DataCommon.cs" />
     <Compile Include="DataConnections.cs" />
     <Compile Include="LogAppData.cs" />
+    <Compile Include="MenuData.cs" />
+    <Compile Include="MenuRolesData.cs" />
     <Compile Include="ParametrosData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository.cs" />
