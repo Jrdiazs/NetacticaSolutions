@@ -59,6 +59,8 @@
     <Content Include="NetacticaWeb\.gitignore" />
     <Content Include="NetacticaWeb\e2e\tsconfig.json" />
     <Content Include="NetacticaWeb\karma.conf.js" />
+    <Content Include="NetacticaWeb\src\app\accounts\accounts.component.css" />
+    <Content Include="NetacticaWeb\src\app\accounts\accounts.component.html" />
     <Content Include="NetacticaWeb\src\assets\.gitkeep" />
     <Content Include="NetacticaWeb\.browserslistrc" />
     <Content Include="NetacticaWeb\.editorconfig" />
@@ -89,6 +91,9 @@
   <ItemGroup>
     <TypeScriptCompile Include="NetacticaWeb\e2e\src\app.e2e-spec.ts" />
     <TypeScriptCompile Include="NetacticaWeb\e2e\src\app.po.ts" />
+    <TypeScriptCompile Include="NetacticaWeb\src\app\accounts\accounts.component.spec.ts" />
+    <TypeScriptCompile Include="NetacticaWeb\src\app\accounts\accounts.component.ts" />
+    <TypeScriptCompile Include="NetacticaWeb\src\app\app-routing.module.ts" />
     <TypeScriptCompile Include="NetacticaWeb\src\app\app.component.spec.ts" />
     <TypeScriptCompile Include="NetacticaWeb\src\app\app.component.ts" />
     <TypeScriptCompile Include="NetacticaWeb\src\app\app.module.ts" />
