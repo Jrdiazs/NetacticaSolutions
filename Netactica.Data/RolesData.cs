@@ -53,10 +53,10 @@ namespace Netactica.Data
             {
                 var query = DataBase.Query<Roles, Terceros, Roles>(sql: "NetacticaDB_SP_RolesConsultar", param: new
                 {
-                    RolId = filtro.RolId,
-                    Descripcion = filtro.Descripcion,
-                    Estado = filtro.Estado,
-                    TerceroId = filtro.TerceroId
+                    filtro.RolId,
+                    filtro.Descripcion,
+                    filtro.Estado,
+                    filtro.TerceroId
                 },
                 map: (r, t) => { r.Tercero = t; return r; },
                 splitOn: "split",

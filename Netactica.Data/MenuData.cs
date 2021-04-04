@@ -129,9 +129,9 @@ namespace Netactica.Data
             {
                 var query = DataBase.Query<Menu, Menu, Menu>(sql: "NetacticaDB_SP_MenuConsultar", splitOn: "split", map: (m, MenuPadre) => { m.MenuPadre = MenuPadre; return m; }, param: new
                 {
-                    MenuId = filtro.MenuId,
-                    MenuPadreId = filtro.MenuPadreId,
-                    Estado = filtro.Estado
+                    filtro.MenuId,
+                    filtro.MenuPadreId,
+                    filtro.Estado
                 }, transaction: transaction, commandType: CommandType.StoredProcedure).ToList();
                 return query ?? new List<Menu>();
             }

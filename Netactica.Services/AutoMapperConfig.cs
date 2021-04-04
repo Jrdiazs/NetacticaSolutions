@@ -292,16 +292,10 @@ namespace Netactica.Services
         public static void MappingRolesMenuRequest(IMapperConfigurationExpression config)
         {
             config.CreateMap<RolesMenuTVPRequest, RolesMenuTVP>().
-               ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
-               ForMember(x => x.MenuRolId, o => o.MapFrom(s => s.Id)).
-               ForMember(x => x.MenuId, o => o.MapFrom(s => s.Menu)).
-               ForMember(x => x.RolId, o => o.MapFrom(s => s.Rol));
+               ForMember(x => x.MenuId, o => o.MapFrom(s => s.Menu));
 
             config.CreateMap<RolesMenuTVP, RolesMenuTVPRequest>().
-               ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
-               ForMember(x => x.Id, o => o.MapFrom(s => s.MenuRolId)).
-               ForMember(x => x.Menu, o => o.MapFrom(s => s.MenuId)).
-               ForMember(x => x.Rol, o => o.MapFrom(s => s.RolId));
+               ForMember(x => x.Menu, o => o.MapFrom(s => s.MenuId));
         }
     }
 }

@@ -6,7 +6,9 @@ using System;
 
 namespace Netactica.Services
 {
+    
     public class ReservasServices : BaseServices, IReservasServices, IDisposable
+    
     {
         private readonly IReservasData _data;
 

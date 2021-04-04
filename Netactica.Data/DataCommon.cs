@@ -237,7 +237,7 @@ namespace Netactica.Data
                 sql.AppendLine(@"FROM Roles r");
                 sql.AppendLine(@"WHERE r.RolId = @rolId;");
 
-                var fullName = DataBase.ExecuteScalar<string>(sql.ToString(), param: new { rolId = rolId }, transaction: transaction);
+                var fullName = DataBase.ExecuteScalar<string>(sql.ToString(), param: new { rolId }, transaction: transaction);
 
                 return fullName ?? "SIN ROL";
             }

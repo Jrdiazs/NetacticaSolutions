@@ -323,7 +323,7 @@ namespace Netactica.Data
             {
                 var query = DataBase.Query<UsuariosListado>(sql: "NetacticaDB_SP_UsuariosConsultar_Admon", param: new
                 {
-                    UsuarioNombre = filtro.UsuarioNombre,
+                    filtro.UsuarioNombre,
                     UsuarioEstadoId = filtro.EstadoId,
                     Documento = filtro.Identificacion,
                     NombreCompleto = filtro.NombresCompletos,
@@ -351,7 +351,7 @@ namespace Netactica.Data
             {
                 var query = DataBase.Query<UsuariosListado>(sql: "NetacticaDB_SP_UsuariosConsultar_NoAdmon", param: new
                 {
-                    UsuarioNombre = filtro.UsuarioNombre,
+                    filtro.UsuarioNombre,
                     UsuarioEstadoId = filtro.EstadoId,
                     Documento = filtro.Identificacion,
                     NombreCompleto = filtro.NombresCompletos,

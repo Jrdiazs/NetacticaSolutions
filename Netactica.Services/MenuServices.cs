@@ -60,8 +60,8 @@ namespace Netactica.Services
             ResponseModel response = new ResponseModel();
             try
             {
-                request.Roles = request.Roles ?? new List<RolesMenuTVPRequest>();
-                var roles = Mapper.Map<List<RolesMenuTVPRequest>, List<RolesMenuTVP>>(request.Roles);
+                request.Menus = request.Menus ?? new List<RolesMenuTVPRequest>();
+                var roles = Mapper.Map<List<RolesMenuTVPRequest>, List<RolesMenuTVP>>(request.Menus);
                 var count = _dataRoles.GuardarMenuRol(roles, request.RolId, request.UserId);
                 //Consulta los menus del usuario que inicia sesion
                 var menusUsuarioCrea = ConsultarMenuPorRol(request.RolUserId);

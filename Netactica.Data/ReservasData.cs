@@ -39,9 +39,9 @@ namespace Netactica.Data
                 var query = DataBase.Query<Reservas, TipoIdentificacion, Reservas>(sql: "NetacticaDB_SP_ReservasConsultar",
                     param: new
                     {
-                        ReservaId = filtro.ReservaId,
-                        FechaCreacionIni = filtro.FechaCreacionIni,
-                        FechaCreacionFin = filtro.FechaCreacionFin
+                        filtro.ReservaId,
+                        filtro.FechaCreacionIni,
+                        filtro.FechaCreacionFin
                     }, map: (r, ti) => { r.TipoIdentificacion = ti; return r; }, splitOn: "split", commandType: CommandType.StoredProcedure).ToList();
 
                 return query ?? new List<Reservas>();

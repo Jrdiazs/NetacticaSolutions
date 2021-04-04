@@ -15,11 +15,27 @@ namespace Netactica.Data
         /// <summary>
         /// Obtiene la conexion actual de base de datos
         /// </summary>
-        public IDbConnection DataBase { get; }
+        public IDbConnection DataBase { get {
+                if (_dataBase == null)
+                    _dataBase = GetSqlConnection("DefaultDatabase");
+                else
+                    if (_dataBase.ConnectionString == string.Empty)
+                    _dataBase.ConnectionString = "DefaultDatabase".ReadConnections();
 
+                return _dataBase;
+            } }
+
+        /// <summary>
+        /// Variables para la conexion actual
+        /// </summary>
+        private IDbConnection _dataBase;
+
+        /// <summary>
+        /// 
+        /// </summary>
         public DataConnections()
         {
-            DataBase = GetSqlConnection("DefaultDatabase");
+            _dataBase = GetSqlConnection("DefaultDatabase");
         }
 
         /// <summary>
@@ -39,8 +55,8 @@ namespace Netactica.Data
         {
             try
             {
-                if (DataBase != null && DataBase.State != ConnectionState.Closed)
-                    DataBase.Close();
+                if (_dataBase != null && _dataBase.State != ConnectionState.Closed)
+                    _dataBase.Close();
             }
             catch (Exception)
             {
@@ -55,8 +71,8 @@ namespace Netactica.Data
         {
             try
             {
-                if (DataBase != null && DataBase.State != ConnectionState.Open)
-                    DataBase.Open();
+                if (_dataBase != null && _dataBase.State != ConnectionState.Open)
+                    _dataBase.Open();
             }
             catch (Exception)
             {

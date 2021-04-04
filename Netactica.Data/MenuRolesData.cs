@@ -48,7 +48,7 @@ namespace Netactica.Data
         /// <param name="rolId">rol id</param>
         /// <param name="usuarioId">usuario id</param>
         /// <returns>numero de filas afectadas</returns>
-        public int GuardarMenuRol(List<RolesMenuTVP> roles,Guid rolId, Guid? usuarioId) 
+        public int GuardarMenuRol(List<RolesMenuTVP> roles, Guid rolId, Guid? usuarioId)
         {
             IDbConnection connections = null;
             try
@@ -58,17 +58,17 @@ namespace Netactica.Data
                 using (connections = DataBase)
                 {
                     connections.Open();
-                    using (var trx = connections.BeginTransaction()) 
+                    using (var trx = connections.BeginTransaction())
                     {
                         try
                         {
                             rowsCount = connections.Execute(sql: "NetacticaDB_SP_MenuRoles_Insertar",
                                 transaction: trx,
                                 commandType: CommandType.StoredProcedure,
-                                param: new 
+                                param: new
                                 {
-                                    roles = table.AsTableValuedParameter("dbo.TVP_MenuRoles"),
-                                    rolId = rolId,
+                                    menus = table.AsTableValuedParameter("dbo.TVP_MenuRoles"),
+                                    rolId,
                                     Usuario = usuarioId,
                                     Fecha = DateTime.Now
                                 });
@@ -89,10 +89,10 @@ namespace Netactica.Data
             {
                 throw;
             }
-            finally 
+            finally
             {
-                if (connections != null)
-                    connections.Dispose();
+                if (connections != null && connections.State == ConnectionState.Open)
+                    connections.Close();
             }
         }
 
@@ -197,10 +197,10 @@ namespace Netactica.Data
                 var query = DataBase.Query<MenuRoles, Menu, Roles, MenuRoles>(sql: "NetacticaDB_SP_MenuRolesConsultar",
                     map: (mr, m, r) => { mr.Menu = m; mr.Rol = r; return mr; }, param: new
                     {
-                        MenuRolId = filtro.MenuRolId,
-                        MenuId = filtro.MenuId,
-                        RolId = filtro.RolId,
-                        Estado = filtro.Estado
+                        filtro.MenuRolId,
+                        filtro.MenuId,
+                        filtro.RolId,
+                        filtro.Estado
                     }, splitOn: "split", transaction: transaction, commandType: CommandType.StoredProcedure).ToList();
 
                 return query ?? new List<MenuRoles>();

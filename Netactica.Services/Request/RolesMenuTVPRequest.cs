@@ -5,18 +5,12 @@ namespace Netactica.Services.Request
 {
     public class RolesMenuTVPRequest
     {
-        public int Id { get; set; }
-
         public int Menu { get; set; }
-
-        public Guid Rol { get; set; }
-
-        public bool Estado { get; set; }
     }
 
     public class RolesMenuSaveRequest 
     {
-        public List<RolesMenuTVPRequest> Roles { get; set; }
+        public List<RolesMenuTVPRequest> Menus { get; set; }
 
         public Guid RolId { get; set; }
 

@@ -10,19 +10,13 @@ namespace Netactica.Models
     /// </summary>
     public class RolesMenuTVP
     {
-        public int MenuRolId { get; set; }
-
         public int MenuId { get; set; }
-
-        public Guid RolId { get; set; }
-
-        public bool Estado { get; set; }
 
         public static DataTable ListRolesToTable(List<RolesMenuTVP> list)
         {
             try
             {
-                var data = list.ListToDataTable("MenuRolId", "MenuId", "RolId", "Estado");
+                var data = list.ListToDataTable("MenuId");
                 return data;
             }
             catch (Exception)
