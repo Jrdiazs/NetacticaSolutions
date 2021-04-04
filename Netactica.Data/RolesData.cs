@@ -30,7 +30,7 @@ namespace Netactica.Data
         {
             try
             {
-                var query = ConsultarRoles(new RolesFiltro() { Id = rolId }, transaction);
+                var query = ConsultarRoles(new RolesFiltro() { RolId = rolId }, transaction);
                 var rol = query.FirstOrDefault();
 
                 return rol;
@@ -53,10 +53,10 @@ namespace Netactica.Data
             {
                 var query = DataBase.Query<Roles, Terceros, Roles>(sql: "NetacticaDB_SP_RolesConsultar", param: new
                 {
-                    RolId = filtro.Id,
-                    Descripcion = filtro.Nombre,
-                    Estado = filtro.Estados,
-                    TerceroId = filtro.Tercero
+                    RolId = filtro.RolId,
+                    Descripcion = filtro.Descripcion,
+                    Estado = filtro.Estado,
+                    TerceroId = filtro.TerceroId
                 },
                 map: (r, t) => { r.Tercero = t; return r; },
                 splitOn: "split",
@@ -81,7 +81,7 @@ namespace Netactica.Data
         {
             try
             {
-                return ConsultarRoles(new RolesFiltro { Tercero = TerceroId }, transaction);
+                return ConsultarRoles(new RolesFiltro { TerceroId = TerceroId }, transaction);
             }
             catch (Exception)
             {
@@ -169,6 +169,10 @@ namespace Netactica.Data
 
                 return roles;
             }
+            catch (BusinessException)
+            {
+                throw;
+            }
             catch (Exception)
             {
                 throw;
@@ -204,20 +208,21 @@ namespace Netactica.Data
         {
             try
             {
+                roles.FechaModifica = DateTime.Now;
+
                 if (!ExisteRolPorId(roles, transaction))
                     throw new BusinessException($"No existe el rol por id {roles.RolId}, verifique!");
 
                 if (ExisteRolPorNombre(roles, transaction: transaction))
                     throw new BusinessException($"Ya existe un rol con el nombre {roles.Descripcion}, verifique!");
 
-                bool isRolAdmin = IsRolAdmon(roles.RolIdCreate);
+                bool isRolAdmin = IsRolAdmon(roles.RolIdCreate,transaction);
 
                 if (!isRolAdmin && roles.EsSuperAdmon)
                     throw new BusinessException($"Solo el rol super administrador puede crear roles con super administrador");
 
-                roles.FechaModifica = DateTime.Now;
 
-                var oldRole = GetFindById(roles.RolId);
+                var oldRole = GetFindById(roles.RolId,transaction);
 
                 if (oldRole == null)
                     throw new NotFoundException($"No existe rol con id {roles.RolId}");
@@ -227,8 +232,9 @@ namespace Netactica.Data
                 oldRole.Estado = roles.Estado;
                 oldRole.FechaModifica = roles.FechaModifica;
                 oldRole.TerceroId = roles.TerceroId;
+                oldRole.UsuarioModifica = roles.UsuarioModifica;
 
-                Update(oldRole);
+                Update(oldRole, transaction);
 
                 return oldRole;
             }

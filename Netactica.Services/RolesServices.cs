@@ -91,10 +91,7 @@ namespace Netactica.Services
                     response.NotFound($"No existe el rol con id {rolId}");
                 }
             }
-            catch (NotFoundException ex)
-            {
-                response.NotFound(ex);
-            }
+           
             catch (BusinessException ex)
             {
                 response.Fail(ex);

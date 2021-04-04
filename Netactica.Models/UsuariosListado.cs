@@ -27,9 +27,9 @@ namespace Netactica.Models
 
     public class UsuarioFiltro
     {
-        public string NameUser { get; set; }
+        public string UsuarioNombre { get; set; }
 
-        public int? Estado { get; set; }
+        public int? EstadoId { get; set; }
 
         public string Identificacion { get; set; }
 

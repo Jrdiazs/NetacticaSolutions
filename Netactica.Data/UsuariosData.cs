@@ -29,15 +29,26 @@ namespace Netactica.Data
         public Usuario GuardarUsuario(Usuario usuario)
         {
             IDbConnection connection = null;
-            usuario.UsuarioId = usuario.UsuarioId == Guid.Empty ? Guid.NewGuid() : usuario.UsuarioId;
-
+           
             try
             {
+                usuario.UsuarioId = usuario.UsuarioId == Guid.Empty ? Guid.NewGuid() : usuario.UsuarioId;
+
                 if (ExisteUsuarioPorId(usuario))
                     throw new BusinessException($"Ya existe un usuario con este id {usuario.UsuarioId}");
 
                 if (ExisteUsuarioPorNombre(usuario, true))
                     throw new BusinessException($"Ya existe un usuario con este nombre {usuario.UsuarioNombre}");
+
+
+                var parameters = new DynamicParameters();
+                parameters.Add("UsuarioId", usuario.UsuarioId, dbType: DbType.Guid, direction: ParameterDirection.InputOutput);
+                parameters.Add("RolId", dbType: DbType.Guid, direction: ParameterDirection.Output);
+                parameters.Add("UsuarioNombre", usuario.UsuarioNombre);
+                parameters.Add("UsuarioCorreo", usuario.UsuarioCorreo);
+                parameters.Add("UsuarioCrea", usuario.UsuarioCrea);
+                parameters.Add("Pw", usuario.Pw);
+                parameters.Add("LenguajeId", usuario.LenguajeId);
 
                 using (connection = DataBase)
                 {
@@ -46,15 +57,6 @@ namespace Netactica.Data
                     {
                         try
                         {
-                            var parameters = new DynamicParameters();
-                            parameters.Add("UsuarioId", usuario.UsuarioId, dbType: DbType.Guid, direction: ParameterDirection.Output);
-                            parameters.Add("RolId", dbType: DbType.Guid, direction: ParameterDirection.Output);
-                            parameters.Add("UsuarioNombre", usuario.UsuarioNombre);
-                            parameters.Add("UsuarioCorreo", usuario.UsuarioCorreo);
-                            parameters.Add("UsuarioCrea", usuario.UsuarioCrea);
-                            parameters.Add("Pw", usuario.Pw);
-                            parameters.Add("LenguajeId", usuario.LenguajeId);
-
                             connection.Execute("NetacticaDB_SP_Usuario_Insertar", param: parameters, transaction: trx, commandType: CommandType.StoredProcedure);
 
                             var id = parameters.Get<Guid>("UsuarioId");
@@ -89,16 +91,16 @@ namespace Netactica.Data
         /// </summary>
         /// <param name="usuario">usuario</param>
         /// <returns>Usuario</returns>
-        public Usuario ModificarUsuario(Usuario usuario)
+        public Usuario ModificarUsuario(Usuario usuario, IDbTransaction transaction = null)
         {
             try
             {
                 usuario.FechaModificacion = DateTime.Now;
 
-                if (ExisteUsuarioPorNombre(usuario))
+                if (ExisteUsuarioPorNombre(usuario,transaction: transaction))
                     throw new BusinessException($"Ya existe un usuario con este nombre '{usuario.UsuarioNombre}' verifique !!");
 
-                var oldUser = GetFindById(usuario.UsuarioId);
+                var oldUser = GetFindById(usuario.UsuarioId,transaction);
                 if (oldUser == null)
                     throw new NotFoundException($"No existe el usuario por id {usuario.UsuarioId}");
 
@@ -111,9 +113,9 @@ namespace Netactica.Data
                 oldUser.UsuarioModifica = usuario.UsuarioModifica;
                 oldUser.UsuarioNombre = usuario.UsuarioNombre;
 
-                Update(oldUser);
+                Update(oldUser,transaction);
 
-                usuario = ConsultarUsuario(usuario.UsuarioId);
+                usuario = ConsultarUsuario(usuario.UsuarioId,transaction:transaction);
 
                 usuario.Pw = null;
 
@@ -216,11 +218,11 @@ namespace Netactica.Data
         /// </summary>
         /// <param name="usuario">usuario</param>
         /// <returns>Usuario</returns>
-        public Usuario ModificarPassword(Usuario usuario)
+        public Usuario ModificarPassword(Usuario usuario, IDbTransaction transaction = null)
         {
             try
             {
-                var oldUser = GetFindById(usuario.UsuarioId);
+                var oldUser = GetFindById(usuario.UsuarioId,transaction);
                 if (oldUser == null)
                     throw new NotFoundException($"No existe el usuario por id {usuario.UsuarioId}");
 
@@ -229,9 +231,9 @@ namespace Netactica.Data
                 oldUser.UsuarioModifica = usuario.UsuarioModifica;
                 oldUser.RestauraClave = usuario.RestauraClave;
 
-                Update(oldUser);
+                Update(oldUser,transaction);
 
-                usuario = ConsultarUsuario(usuario.UsuarioId);
+                usuario = ConsultarUsuario(usuario.UsuarioId,transaction: transaction);
 
                 usuario.Pw = null;
 
@@ -256,11 +258,11 @@ namespace Netactica.Data
         /// </summary>
         /// <param name="usuario">usuario</param>
         /// <returns>Usuario</returns>
-        public Usuario ModificarLenguaje(Usuario usuario)
+        public Usuario ModificarLenguaje(Usuario usuario, IDbTransaction transaction = null)
         {
             try
             {
-                var oldUser = GetFindById(usuario.UsuarioId);
+                var oldUser = GetFindById(usuario.UsuarioId, transaction);
                 if (oldUser == null)
                     throw new NotFoundException($"No existe el usuario por id {usuario.UsuarioId}");
 
@@ -268,9 +270,9 @@ namespace Netactica.Data
                 oldUser.FechaModificacion = DateTime.Now;
                 oldUser.UsuarioModifica = usuario.UsuarioModifica;
 
-                Update(oldUser);
+                Update(oldUser, transaction);
 
-                usuario = ConsultarUsuario(usuario.UsuarioId);
+                usuario = ConsultarUsuario(usuario.UsuarioId,transaction: transaction);
 
                 usuario.Pw = null;
 
@@ -321,8 +323,8 @@ namespace Netactica.Data
             {
                 var query = DataBase.Query<UsuariosListado>(sql: "NetacticaDB_SP_UsuariosConsultar_Admon", param: new
                 {
-                    UsuarioNombre = filtro.NameUser,
-                    UsuarioEstadoId = filtro.Estado,
+                    UsuarioNombre = filtro.UsuarioNombre,
+                    UsuarioEstadoId = filtro.EstadoId,
                     Documento = filtro.Identificacion,
                     NombreCompleto = filtro.NombresCompletos,
                     TerceroId = filtro.Tercero,
@@ -349,8 +351,8 @@ namespace Netactica.Data
             {
                 var query = DataBase.Query<UsuariosListado>(sql: "NetacticaDB_SP_UsuariosConsultar_NoAdmon", param: new
                 {
-                    UsuarioNombre = filtro.NameUser,
-                    UsuarioEstadoId = filtro.Estado,
+                    UsuarioNombre = filtro.UsuarioNombre,
+                    UsuarioEstadoId = filtro.EstadoId,
                     Documento = filtro.Identificacion,
                     NombreCompleto = filtro.NombresCompletos,
                     TerceroId = filtro.Tercero,
@@ -391,21 +393,21 @@ namespace Netactica.Data
         /// </summary>
         /// <param name="usuario">usuario</param>
         /// <returns>Usuario</returns>
-        Usuario ModificarUsuario(Usuario usuario);
+        Usuario ModificarUsuario(Usuario usuario, IDbTransaction transaction = null);
 
         /// <summary>
         /// Modifica la contraseña de un usuario por id
         /// </summary>
         /// <param name="usuario">usuario</param>
         /// <returns>Usuario</returns>
-        Usuario ModificarPassword(Usuario usuario);
+        Usuario ModificarPassword(Usuario usuario, IDbTransaction transaction = null);
 
         /// <summary>
         /// Actualiza el lenguaje del usuario
         /// </summary>
         /// <param name="usuario">usuario</param>
         /// <returns>Usuario</returns>
-        Usuario ModificarLenguaje(Usuario usuario);
+        Usuario ModificarLenguaje(Usuario usuario, IDbTransaction transaction = null);
 
         /// <summary>
         /// Verifica si un rol es super administrador

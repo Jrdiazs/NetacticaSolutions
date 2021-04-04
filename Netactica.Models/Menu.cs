@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Netactica.Models
 {
     [Table("Menu")]
-
     public class Menu
     {
         [Key]

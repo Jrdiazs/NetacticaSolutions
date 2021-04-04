@@ -26,8 +26,8 @@ namespace Netactica.Models
         [Column("ValorDateTime")]
         public DateTime? ValorDateTime { get; set; }
 
-        [Column("ValorSrtring")]
-        public string ValorSrtring { get; set; }
+        [Column("ValorString")]
+        public string ValorString { get; set; }
 
         [Column("ValorBingInt")]
         public long? ValorBingInt { get; set; }

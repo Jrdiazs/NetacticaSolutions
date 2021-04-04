@@ -70,7 +70,9 @@ namespace Netactica.Tools.StringTools
             try
             {
                 if (value.IsEmpty())
-                    value = string.Empty;
+                {
+                    return "%%";
+                }
 
                 value = value.Replace("[", "[[]").Replace("%", "[%]");
 

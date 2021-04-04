@@ -20,6 +20,8 @@ namespace Netactica.Services
                 MappingRoleFilterRequest(config);
                 MappingUsuariosRolesResponse(config);
                 MappingRoleUsuariosFilterRequest(config);
+                MappingMenuResponse(config);
+                MappingRolesMenuRequest(config);
             });
         }
 
@@ -115,9 +117,9 @@ namespace Netactica.Services
         public static void MappingUsersSearchRequest(IMapperConfigurationExpression config)
         {
             config.CreateMap<UsuariosFiltroRequest, UsuarioFiltro>().
-               ForMember(x => x.Estado, o => o.MapFrom(s => s.EstadoId)).
+               ForMember(x => x.EstadoId, o => o.MapFrom(s => s.EstadoId)).
                ForMember(x => x.Identificacion, o => o.MapFrom(s => s.Documento)).
-               ForMember(x => x.NameUser, o => o.MapFrom(s => s.Nombre)).
+               ForMember(x => x.UsuarioNombre, o => o.MapFrom(s => s.Nombre)).
                ForMember(x => x.NombresCompletos, o => o.MapFrom(s => s.NombresCompletos)).
                ForMember(x => x.Rol, o => o.MapFrom(s => s.RolId)).
                ForMember(x => x.Tercero, o => o.MapFrom(s => s.Tercero)).
@@ -125,9 +127,9 @@ namespace Netactica.Services
                ;
 
             config.CreateMap<UsuarioFiltro, UsuariosFiltroRequest>().
-                ForMember(x => x.EstadoId, o => o.MapFrom(s => s.Estado)).
+                ForMember(x => x.EstadoId, o => o.MapFrom(s => s.EstadoId)).
                 ForMember(x => x.Documento, o => o.MapFrom(s => s.Identificacion)).
-                ForMember(x => x.Nombre, o => o.MapFrom(s => s.NameUser)).
+                ForMember(x => x.Nombre, o => o.MapFrom(s => s.UsuarioNombre)).
                 ForMember(x => x.NombresCompletos, o => o.MapFrom(s => s.NombresCompletos)).
                 ForMember(x => x.RolId, o => o.MapFrom(s => s.Rol)).
                 ForMember(x => x.Tercero, o => o.MapFrom(s => s.Tercero)).
@@ -196,15 +198,15 @@ namespace Netactica.Services
         public static void MappingRoleFilterRequest(IMapperConfigurationExpression config)
         {
             config.CreateMap<RolesFiltroRequest, RolesFiltro>().
-               ForMember(x => x.Estados, o => o.MapFrom(s => s.EstadoRol)).
-               ForMember(x => x.Id, o => o.Ignore()).
-               ForMember(x => x.Nombre, o => o.MapFrom(s => s.NombreRol)).
-               ForMember(x => x.Tercero, o => o.MapFrom(s => s.Tercero));
+               ForMember(x => x.Estado, o => o.MapFrom(s => s.EstadoRol)).
+               ForMember(x => x.RolId, o => o.Ignore()).
+               ForMember(x => x.Descripcion, o => o.MapFrom(s => s.NombreRol)).
+               ForMember(x => x.TerceroId, o => o.MapFrom(s => s.Tercero));
 
             config.CreateMap<RolesFiltro, RolesFiltroRequest>().
-               ForMember(x => x.EstadoRol, o => o.MapFrom(s => s.Estados)).
-               ForMember(x => x.NombreRol, o => o.MapFrom(s => s.Nombre)).
-               ForMember(x => x.Tercero, o => o.MapFrom(s => s.Tercero));
+               ForMember(x => x.EstadoRol, o => o.MapFrom(s => s.Estado)).
+               ForMember(x => x.NombreRol, o => o.MapFrom(s => s.Descripcion)).
+               ForMember(x => x.Tercero, o => o.MapFrom(s => s.TerceroId));
         }
 
         public static void MappingUsuariosRolesResponse(IMapperConfigurationExpression config)
@@ -254,6 +256,52 @@ namespace Netactica.Services
                ForMember(x => x.Rol, o => o.MapFrom(s => s.Rol)).
                ForMember(x => x.Usuario, o => o.MapFrom(s => s.Usuario)).
                ForMember(x => x.Tercero, o => o.MapFrom(s => s.Tercero));
+        }
+
+        public static void MappingMenuResponse(IMapperConfigurationExpression config)
+        {
+            config.CreateMap<MenuItemResponse, Menu>().
+               ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
+               ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
+               ForMember(x => x.FechaModificacion, o => o.MapFrom(s => s.FechaModificacion)).
+               ForMember(x => x.MenuClass, o => o.MapFrom(s => s.Class)).
+               ForMember(x => x.MenuId, o => o.MapFrom(s => s.Id)).
+               ForMember(x => x.MenuNombre, o => o.MapFrom(s => s.Nombre)).
+               ForMember(x => x.MenuOrden, o => o.MapFrom(s => s.Ordenamiento)).
+               ForMember(x => x.MenuPadre, o => o.Ignore()).
+               ForMember(x => x.MenuPadreId, o => o.MapFrom(s => s.PadreId)).
+               ForMember(x => x.MenuUrl, o => o.MapFrom(s => s.Url)).
+               ForMember(x => x.UsuarioCrea, o => o.MapFrom(s => s.UsuarioCrea)).
+               ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica));
+
+            config.CreateMap<Menu, MenuItemResponse>().
+              ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
+               ForMember(x => x.Checked, o => o.Ignore()).
+              ForMember(x => x.FechaCreacion, o => o.MapFrom(s => s.FechaCreacion)).
+              ForMember(x => x.FechaModificacion, o => o.MapFrom(s => s.FechaModificacion)).
+              ForMember(x => x.Class, o => o.MapFrom(s => s.MenuClass)).
+              ForMember(x => x.Id, o => o.MapFrom(s => s.MenuId)).
+              ForMember(x => x.Nombre, o => o.MapFrom(s => s.MenuNombre)).
+              ForMember(x => x.Ordenamiento, o => o.MapFrom(s => s.MenuOrden)).
+              ForMember(x => x.PadreId, o => o.MapFrom(s => s.MenuPadreId)).
+              ForMember(x => x.Url, o => o.MapFrom(s => s.MenuUrl)).
+              ForMember(x => x.UsuarioCrea, o => o.MapFrom(s => s.UsuarioCrea)).
+              ForMember(x => x.UsuarioModifica, o => o.MapFrom(s => s.UsuarioModifica));
+        }
+
+        public static void MappingRolesMenuRequest(IMapperConfigurationExpression config)
+        {
+            config.CreateMap<RolesMenuTVPRequest, RolesMenuTVP>().
+               ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
+               ForMember(x => x.MenuRolId, o => o.MapFrom(s => s.Id)).
+               ForMember(x => x.MenuId, o => o.MapFrom(s => s.Menu)).
+               ForMember(x => x.RolId, o => o.MapFrom(s => s.Rol));
+
+            config.CreateMap<RolesMenuTVP, RolesMenuTVPRequest>().
+               ForMember(x => x.Estado, o => o.MapFrom(s => s.Estado)).
+               ForMember(x => x.Id, o => o.MapFrom(s => s.MenuRolId)).
+               ForMember(x => x.Menu, o => o.MapFrom(s => s.MenuId)).
+               ForMember(x => x.Rol, o => o.MapFrom(s => s.RolId));
         }
     }
 }

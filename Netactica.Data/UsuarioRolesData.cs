@@ -186,6 +186,8 @@ namespace Netactica.Data
             {
                 usuario.UsuarioRolId = usuario.UsuarioRolId == Guid.Empty ? Guid.NewGuid() : usuario.UsuarioRolId;
                 usuario.FechaCreacion = DateTime.Now;
+                usuario.FechaModifica = null;
+                usuario.UsuarioModifica = null;
 
                 if (ExisteRolInsertar(usuario, transaction))
                     throw new BusinessException($"Ya existe un usuario rol con estos datos");

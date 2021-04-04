@@ -77,10 +77,6 @@ namespace Netactica.Services
 
                 response.SuccesCall(usuarios, "Consulta cargada correctamente");
             }
-            catch (NotFoundException ex)
-            {
-                response.NotFound(ex);
-            }
             catch (BusinessException ex)
             {
                 response.Fail(ex);
@@ -114,10 +110,6 @@ namespace Netactica.Services
                     response.NotFound("No se encuentra el usuario por id");
                 }
             }
-            catch (NotFoundException ex)
-            {
-                response.NotFound(ex);
-            }
             catch (BusinessException ex)
             {
                 response.Fail(ex);
@@ -150,10 +142,6 @@ namespace Netactica.Services
                 {
                     response.NotFound($"No se encuentra el usuario por nombre {nombreUsuario}");
                 }
-            }
-            catch (NotFoundException ex)
-            {
-                response.NotFound(ex);
             }
             catch (BusinessException ex)
             {
@@ -357,10 +345,6 @@ namespace Netactica.Services
                     response.NotFound($"No se encuentra la información por id {usuarioId}");
                 }
             }
-            catch (NotFoundException ex)
-            {
-                response.NotFound(ex);
-            }
             catch (BusinessException ex)
             {
                 response.Fail(ex);
@@ -418,8 +402,17 @@ namespace Netactica.Services
                 var user = Mapper.Map<UsuarioInfoResponse, UsuarioInfo>(userResponse);
                 user = _dataInfoUser.ModificarUsuario(user);
 
-                userResponse = Mapper.Map<UsuarioInfo, UsuarioInfoResponse>(user);
-                response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} guardado correctamente");
+                if (user != null)
+                {
+                    userResponse = Mapper.Map<UsuarioInfo, UsuarioInfoResponse>(user);
+                    response.SuccesCall(userResponse, $" Usuario con id {userResponse.Id} guardado correctamente");
+                }
+                else 
+                {
+                    response.NotFound($"No existe el usuario por id {userResponse.Id}");
+                }
+
+                
             }
             catch (NotFoundException ex)
             {

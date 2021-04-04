@@ -4,12 +4,12 @@ namespace Netactica.Models
 {
     public class RolesFiltro
     {
-        public Guid? Id { get; set; }
+        public Guid? RolId { get; set; }
 
-        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
 
-        public Guid? Tercero { get; set; }
+        public Guid? TerceroId { get; set; }
 
-        public bool? Estados { get; set; }
+        public bool? Estado { get; set; }
     }
 }

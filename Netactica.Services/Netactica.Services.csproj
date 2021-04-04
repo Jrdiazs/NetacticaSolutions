@@ -64,9 +64,11 @@
     <Compile Include="NetacticaContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Request\RolesFiltroRequest.cs" />
+    <Compile Include="Request\RolesMenuTVPRequest.cs" />
     <Compile Include="Request\UsuariosFiltroRequest.cs" />
     <Compile Include="Request\UsuariosRolesFiltroRequest.cs" />
     <Compile Include="ReservasServices.cs" />
+    <Compile Include="Response\MenuItemResponse.cs" />
     <Compile Include="Response\RolesResponse.cs" />
     <Compile Include="Response\UsuariosListadoResponse.cs" />
     <Compile Include="Response\UsuarioInfoResponse.cs" />
@@ -92,6 +94,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
