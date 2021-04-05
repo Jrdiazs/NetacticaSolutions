@@ -51,6 +51,7 @@
     <Compile Include="Menu.cs" />
     <Compile Include="MenuFiltro.cs" />
     <Compile Include="MenuRoles.cs" />
+    <Compile Include="MenuRolesCopy.cs" />
     <Compile Include="MenuRolesFiltro.cs" />
     <Compile Include="ParametroTVP.cs" />
     <Compile Include="Parametros.cs" />

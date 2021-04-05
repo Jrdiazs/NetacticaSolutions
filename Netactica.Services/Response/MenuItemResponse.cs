@@ -27,7 +27,6 @@ namespace Netactica.Services.Response
 
         public bool Estado { get; set; }
 
-        public bool Checked { get; set; }
 
         public DateTime? FechaCreacion { get; set; }
 

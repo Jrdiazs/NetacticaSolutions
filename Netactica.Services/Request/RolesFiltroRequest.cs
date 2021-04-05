@@ -4,10 +4,10 @@ namespace Netactica.Services.Request
 {
     public class RolesFiltroRequest
     {
-        public string NombreRol { get; set; }
+        public string NameRol { get; set; }
 
-        public bool? EstadoRol { get; set; }
+        public bool? StatusRole { get; set; }
 
-        public Guid? Tercero { get; set; }
+        public Guid? ThirdId { get; set; }
     }
 }

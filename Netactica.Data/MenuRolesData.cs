@@ -97,6 +97,58 @@ namespace Netactica.Data
         }
 
         /// <summary>
+        /// Inserta los menus de un rol hacia un rol nuevo
+        /// </summary>
+        /// <param name="menuCopy">menu copy</param>
+        /// <returns>numero de filas afectadas</returns>
+        public int CopiarMenuRol(MenuRolesCopy menuCopy)
+        {
+            IDbConnection connections = null;
+            try
+            {
+                int rowsCount = 0;
+                using (connections = DataBase)
+                {
+                    connections.Open();
+                    using (var trx = connections.BeginTransaction())
+                    {
+                        try
+                        {
+                            rowsCount = connections.Execute(sql: "NetacticaDB_SP_MenuRoles_Copiar",
+                                transaction: trx,
+                                commandType: CommandType.StoredProcedure,
+                                param: new
+                                {
+                                    rolIdSource = menuCopy.RoldIdSource,
+                                    rolIdTarget = menuCopy.RolIdTarget,
+                                    UserId = menuCopy.UsuarioId,
+                                    DateNow = DateTime.Now
+                                });
+
+                            trx.Commit();
+                        }
+                        catch (Exception)
+                        {
+                            trx.Rollback();
+                            throw;
+                        }
+                    }
+                }
+
+                return rowsCount;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                if (connections != null && connections.State == ConnectionState.Open)
+                    connections.Close();
+            }
+        }
+
+        /// <summary>
         /// Consulta un menu rol por id
         /// </summary>
         /// <param name="rolId">id menu rol</param>
@@ -259,5 +311,12 @@ namespace Netactica.Data
         /// <param name="usuarioId">usuario id</param>
         /// <returns>numero de filas afectadas</returns>
         int GuardarMenuRol(List<RolesMenuTVP> roles, Guid rolId, Guid? usuarioId);
+
+        /// <summary>
+        /// Inserta los menus de un rol hacia un rol nuevo
+        /// </summary>
+        /// <param name="menuCopy">menu copy</param>
+        /// <returns>numero de filas afectadas</returns>
+        int CopiarMenuRol(MenuRolesCopy menuCopy);
     }
 }

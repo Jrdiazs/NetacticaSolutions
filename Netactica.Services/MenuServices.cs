@@ -54,7 +54,7 @@ namespace Netactica.Services
         /// retorna de los menus que tiene el usuario actual, chequea los menus creados actualmente para el rol actual
         /// </summary>
         /// <param name="request">listado de roles a guardar</param>
-        /// <returns></returns>
+        /// <returns>ResponseModel List MenuRolesChechedResponse</returns>
         public ResponseModel GuardarMenusRoles(RolesMenuSaveRequest request) 
         {
             ResponseModel response = new ResponseModel();
@@ -63,22 +63,31 @@ namespace Netactica.Services
                 request.Menus = request.Menus ?? new List<RolesMenuTVPRequest>();
                 var roles = Mapper.Map<List<RolesMenuTVPRequest>, List<RolesMenuTVP>>(request.Menus);
                 var count = _dataRoles.GuardarMenuRol(roles, request.RolId, request.UserId);
-                //Consulta los menus del usuario que inicia sesion
+                //Consulta los menus del usuario que inicia sesion y que crea los menus
                 var menusUsuarioCrea = ConsultarMenuPorRol(request.RolUserId);
                 //Consulta los menus que se acaban de crear para el rol
                 var menusCreados = _dataRoles.ConsultarMenuRoles(new MenuRolesFiltro() { RolId = request.RolId });
 
+                var menusReponse = new List<MenuRolesChechedResponse>();
                 /// de la plantilla de menus del usuario que crea
                 /// checkea los items de los menus creados en la transaccion creada
-                foreach (var item in menusUsuarioCrea)
+                foreach (var menu in menusUsuarioCrea)
                 {
-                    if (menusCreados.Any(x => x.MenuId == item.Menu.Id)) 
+                    var menuChecked = Mapper.Map<MenuItemResponse, MenuRolesChecked>(menu.Menu);
+                    var menuItemResponse = new MenuRolesChechedResponse
                     {
-                        CheckedMenu(item, menusCreados);
-                    }
+                        Menu = menuChecked
+                    };
+
+                    if (menusCreados.Any(x => x.MenuId == menu.Menu.Id))
+                        menuChecked.Checked = true;
+
+                    AddChildrenItemResponse(menuItemResponse, menu, menusCreados);
+
+                    menusReponse.Add(menuItemResponse);
                 }
 
-                response.SuccesCall(menusUsuarioCrea, $"Total de menus creados {count}");
+                response.SuccesCall(menusReponse, $"Total de menus creados {count}");
             }
             catch (BusinessException ex)
             {
@@ -93,24 +102,29 @@ namespace Netactica.Services
         }
 
         /// <summary>
-        /// Funcion iterativa para checkear los menus de un rol
+        /// Inserta los menus de un rol hacia un rol nuevo
         /// </summary>
-        /// <param name="menu"></param>
-        private void CheckedMenu(MenuItem menu,List<MenuRoles> menus) 
+        /// <param name="request">menu copy</param>
+        /// <returns>numero de filas afectadas</returns>
+        public ResponseModel CopiarMenuRol(MenuRolesCopyRequest request)
         {
-            if (menu.Menu == null)
-                return;
-            menu.Menu.Checked = true;
-
-            if (menu.Childrens.Count > 0)
+            ResponseModel response = new ResponseModel();
+            try
             {
-                foreach (var children in menu.Childrens)
-                {
-                    CheckedMenu(children, menus);
-                }
+               var menuCopy = Mapper.Map<MenuRolesCopyRequest, MenuRolesCopy>(request);
+               var count = _dataRoles.CopiarMenuRol(menuCopy);
+               response.SuccesCall(count, $"Total de menus creados {count}");
             }
-            else return;
-
+            catch (BusinessException ex)
+            {
+                response.Fail(ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorFatal($"{nameof(MenuServices)}  {nameof(CopiarMenuRol)}", ex);
+                response.Fail(ex, $"Error en => {nameof(CopiarMenuRol)}");
+            }
+            return response;
         }
 
         /// <summary>
@@ -138,6 +152,56 @@ namespace Netactica.Services
             }
 
             return response;
+        }
+
+        #region [Metodos Comunes para Roles Menus]
+        /// <summary>
+        /// Agrega los hijos menu que estan List MenuItem y los convierte a MenuRolesChechedResponse
+        /// </summary>
+        /// <param name="menuItem">menu item cheched response</param>
+        /// <param name="menu">MenuItem</param>
+        /// <param name="menusCreados">Listado de menus creados</param>
+        private void AddChildrenItemResponse(MenuRolesChechedResponse menuItem, MenuItem menu, List<MenuRoles> menusCreados)
+        {
+            if (menu.Childrens.Count == 0)
+                return;
+
+            foreach (var itemChildren in menu.Childrens)
+            {
+
+                var menuChecked = Mapper.Map<MenuItemResponse, MenuRolesChecked>(itemChildren.Menu);
+                var menuItemResponse = new MenuRolesChechedResponse
+                {
+                    Menu = menuChecked
+                };
+
+                if (menusCreados.Any(x => x.MenuId == itemChildren.Menu.Id))
+                    menuChecked.Checked = true;
+
+                AddChildrenItemResponse(menuItemResponse, itemChildren, menusCreados);
+                menuItem.Childrens.Add(menuItemResponse);
+            }
+        }
+
+        /// <summary>
+        /// Funcion iterativa para checkear los menus de un rol
+        /// </summary>
+        /// <param name="menu"></param>
+        private void CheckedMenu(MenuItem menu, List<MenuRoles> menus)
+        {
+            if (menu.Menu == null)
+                return;
+            //menu.Menu.Checked = true;
+
+            if (menu.Childrens.Count > 0)
+            {
+                foreach (var children in menu.Childrens)
+                {
+                    CheckedMenu(children, menus);
+                }
+            }
+            else return;
+
         }
 
         /// <summary>
@@ -190,7 +254,7 @@ namespace Netactica.Services
             {
                 throw;
             }
-           
+
         }
 
         /// <summary>
@@ -231,8 +295,10 @@ namespace Netactica.Services
             {
                 throw;
             }
-        }
+        } 
+        #endregion
 
+      
         #endregion [Roles Menus]
 
         #region [Dispose]
@@ -298,8 +364,15 @@ namespace Netactica.Services
         /// retorna de los menus que tiene el usuario actual, chequea los menus creados actualmente para el rol actual
         /// </summary>
         /// <param name="request">listado de roles a guardar</param>
-        /// <returns>ResponseModel List MenuItemResponse</returns>
+        /// <returns>ResponseModel List MenuRolesChechedResponse</returns>
         ResponseModel GuardarMenusRoles(RolesMenuSaveRequest request);
+
+        /// <summary>
+        /// Inserta los menus de un rol hacia un rol nuevo
+        /// </summary>
+        /// <param name="request">menu copy</param>
+        /// <returns>numero de filas afectadas</returns>
+        ResponseModel CopiarMenuRol(MenuRolesCopyRequest request);
 
         #endregion [Roles Menus]
     }

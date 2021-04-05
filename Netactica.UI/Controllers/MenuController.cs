@@ -66,5 +66,25 @@ namespace Netactica.UI.Controllers
                 throw;
             }
         }
+
+        /// <summary>
+        /// Inserta los menus de un rol hacia un rol nuevo
+        /// </summary>
+        /// <param name="request">menu copy</param>
+        /// <returns>numero de filas afectadas</returns>
+        [HttpPost]
+        [Route("CopiarMenuRol")]
+        public IHttpActionResult CopiarMenuRol([FromBody]MenuRolesCopyRequest request)
+        {
+            try
+            {
+                var response = _services.CopiarMenuRol(request);
+                return Ok(response);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
     }
 }
