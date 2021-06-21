@@ -36,7 +36,7 @@ namespace Netactica.Data
         {
             try
             {
-                var query = DataBase.Query<Reservas, TipoIdentificacion, Reservas>(sql: "NetacticaDB_SP_ReservasConsultar",
+                var query = DataBase.Query<Reservas, TipoIdentificacion, Reservas>(sql: "CompanyDB_SP_ReservasConsultar",
                     param: new
                     {
                         filtro.ReservaId,

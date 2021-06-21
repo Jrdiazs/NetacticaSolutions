@@ -10,25 +10,12 @@ namespace Netactica.Services
     {
         public override void Load()
         {
-            //Repositorios
-            Bind<IDataCommon>().To<DataCommon>();
+          
             Bind<IReservasData>().To<ReservasData>();
-            Bind<IRolesData>().To<RolesData>();
-            Bind<IUsuariosEstadoData>().To<UsuariosEstadoData>();
-            Bind<IUsuarioInfoData>().To<UsuarioInfoData>();
-            Bind<IUsuariosData>().To<UsuariosData>();
-            Bind<IUsuarioRolesData>().To<UsuarioRolesData>();
-            Bind<IParametrosData>().To<ParametrosData>();
-            Bind<ILogAppData>().To<LogAppData>();
-            Bind<ITraduccionControlesData>().To<TraduccionControlesData>();
-            Bind<IMenuData>().To<MenuData>();
-            Bind<IMenuRolesData>().To<MenuRolesData>();
 
             //Servicios
             Bind<IReservasServices>().To<ReservasServices>();
-            Bind<IUsuarioServices>().To<UsuarioServices>();
-            Bind<IRolesServices>().To<RolesServices>();
-            Bind<IMenuServices>().To<MenuServices>();
+           
         }
     }
 }

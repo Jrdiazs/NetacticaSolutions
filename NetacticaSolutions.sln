@@ -23,10 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Data", "Data", "{EDD56E93-D
 	ProjectSection(SolutionItems) = preProject
 		Data\NETACTICA.postman_collection.json = Data\NETACTICA.postman_collection.json
 		Data\NETACTICA_OBJETOS_INSERT.sql = Data\NETACTICA_OBJETOS_INSERT.sql
-		Data\NETACTIVA_DB.bak = Data\NETACTIVA_DB.bak
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netactica.Web.UI", "Netactica.Web.UI\Netactica.Web.UI.csproj", "{2574F603-4B6C-4A30-BFDD-E3BC09EEDFDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,10 +51,6 @@ Global
 		{B1DEAD83-72D7-4019-A605-633841A560A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1DEAD83-72D7-4019-A605-633841A560A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1DEAD83-72D7-4019-A605-633841A560A1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2574F603-4B6C-4A30-BFDD-E3BC09EEDFDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2574F603-4B6C-4A30-BFDD-E3BC09EEDFDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2574F603-4B6C-4A30-BFDD-E3BC09EEDFDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2574F603-4B6C-4A30-BFDD-E3BC09EEDFDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -68,7 +61,6 @@ Global
 		{7964AACB-2D5E-4C75-AD89-A747C2F77EE3} = {87C35DAD-E7FF-4D5D-B963-9C39536843D6}
 		{5BDF0840-83B9-4736-A944-FA8210B38437} = {0E69DC13-16E2-4E0C-9714-5B596971BDC6}
 		{B1DEAD83-72D7-4019-A605-633841A560A1} = {0E69DC13-16E2-4E0C-9714-5B596971BDC6}
-		{2574F603-4B6C-4A30-BFDD-E3BC09EEDFDF} = {E0162852-A3F6-4F18-9BC8-78CD3A5657AE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B0011D6-04B2-43A2-9EE6-C92971D46599}

@@ -46,34 +46,11 @@
   <ItemGroup>
     <Compile Include="Exceptions\BusinessException.cs" />
     <Compile Include="Exceptions\NotFoundException.cs" />
-    <Compile Include="Lenguaje.cs" />
-    <Compile Include="LogApp.cs" />
-    <Compile Include="Menu.cs" />
-    <Compile Include="MenuFiltro.cs" />
-    <Compile Include="MenuRoles.cs" />
-    <Compile Include="MenuRolesCopy.cs" />
-    <Compile Include="MenuRolesFiltro.cs" />
-    <Compile Include="ParametroTVP.cs" />
-    <Compile Include="Parametros.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReservaFiltro.cs" />
     <Compile Include="Reservas.cs" />
     <Compile Include="ResponseModel.cs" />
-    <Compile Include="Roles.cs" />
-    <Compile Include="RolesFiltro.cs" />
-    <Compile Include="RolesMenuTVP.cs" />
-    <Compile Include="SessionUserModel.cs" />
-    <Compile Include="Terceros.cs" />
     <Compile Include="TipoIdentificacion.cs" />
-    <Compile Include="TipoTercero.cs" />
-    <Compile Include="ToolsResponseModel.cs" />
-    <Compile Include="TraduccionControles.cs" />
-    <Compile Include="Usuario.cs" />
-    <Compile Include="UsuarioInfo.cs" />
-    <Compile Include="UsuarioRoles.cs" />
-    <Compile Include="UsuariosEstado.cs" />
-    <Compile Include="UsuariosListado.cs" />
-    <Compile Include="UsuariosRolesFiltro.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Netactica.Tools\Netactica.Tools.csproj">
